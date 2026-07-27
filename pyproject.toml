@@ -19,6 +19,7 @@ dependencies = [
 
 [project.scripts]
 mk-paper = "mk_paper.main:main"
+mk-paper-cli = "mk_paper.cli:main"
 
 [build-system]
 requires = ["setuptools>=68"]

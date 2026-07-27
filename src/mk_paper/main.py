@@ -1,25 +1,9 @@
 """Entrypoint principal del sistema multi-agente."""
 
 import logging
-import sys
-from pathlib import Path
 
 from mk_paper.config.settings import get_settings
-
-
-def setup_logging(level: str) -> None:
-    """Configura el logging de la aplicación."""
-    logging.basicConfig(
-        level=getattr(logging, level.upper(), logging.INFO),
-        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-        stream=sys.stdout,
-    )
-
-
-def ensure_directories(*paths: str) -> None:
-    """Crea directorios de trabajo si no existen."""
-    for path in paths:
-        Path(path).mkdir(parents=True, exist_ok=True)
+from mk_paper.runtime import ensure_directories, setup_logging
 
 
 def main() -> None:
@@ -36,9 +20,15 @@ def main() -> None:
 
     logger.info("mk-paper iniciado")
     logger.info("Modelo principal: %s", settings.litellm_model)
+    logger.info("Modelo rápido: %s", settings.litellm_fast_model)
+    logger.info("Groq configurado: %s", bool(settings.groq_api_key))
     logger.info("Workspace: %s", settings.workspace_dir)
     logger.info("Output: %s", settings.output_dir)
     logger.info("Listo para orquestar el crew (implementación pendiente)")
+    logger.info(
+        "Prueba aislada de literatura: "
+        'python -m mk_paper.cli literature "tu query" --limit 5'
+    )
 
 
 if __name__ == "__main__":

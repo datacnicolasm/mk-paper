@@ -1,6 +1,19 @@
 """Configuración centralizada del proyecto."""
 
+from typing import Annotated
+
+from pydantic import BeforeValidator, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _empty_str_to_none(value: object) -> object:
+    """Convierte strings vacíos o solo espacios en None (secrets opcionales)."""
+    if isinstance(value, str) and not value.strip():
+        return None
+    return value
+
+
+BlankOptionalStr = Annotated[str | None, BeforeValidator(_empty_str_to_none)]
 
 
 class Settings(BaseSettings):
@@ -12,17 +25,18 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # LLM
-    openai_api_key: str | None = None
-    groq_api_key: str | None = None
-    deepseek_api_key: str | None = None
-    openrouter_api_key: str | None = None
-    litellm_model: str = "gpt-4o"
-    litellm_fast_model: str = "openrouter/meta-llama/llama-3.1-8b-instruct"
+    # LLM — Groq es el proveedor principal (velocidad / bajo costo)
+    openai_api_key: BlankOptionalStr = None
+    groq_api_key: BlankOptionalStr = None
+    deepseek_api_key: BlankOptionalStr = None
+    openrouter_api_key: BlankOptionalStr = None
+    litellm_model: str = "groq/llama-3.3-70b-versatile"
+    litellm_fast_model: str = "groq/llama-3.1-8b-instant"
+    llm_temperature: float = 0.2
 
     # AWS / S3
-    aws_access_key_id: str | None = None
-    aws_secret_access_key: str | None = None
+    aws_access_key_id: BlankOptionalStr = None
+    aws_secret_access_key: BlankOptionalStr = None
     aws_region: str = "us-east-1"
     s3_endpoint_url: str | None = None
     s3_bucket: str = "mk-paper"
@@ -36,8 +50,14 @@ class Settings(BaseSettings):
     data_dir: str = "/app/data"
 
     # Literature APIs
-    unpaywall_email: str | None = None
-    semantic_scholar_api_key: str | None = None
+    unpaywall_email: BlankOptionalStr = None
+    semantic_scholar_api_key: BlankOptionalStr = Field(
+        default=None,
+        description=(
+            "API key de Semantic Scholar Graph API. Opcional: sin ella la búsqueda "
+            "funciona con rate limits más bajos. Header: x-api-key."
+        ),
+    )
     http_timeout_seconds: float = 30.0
     http_max_retries: int = 3
 

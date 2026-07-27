@@ -4,51 +4,21 @@ from __future__ import annotations
 
 from crewai import Agent, LLM
 
-from mk_paper.config.settings import Settings, get_settings
+from mk_paper.config.llm import get_llm
 from mk_paper.tools.literature_tools import search_scientific_literature
 
 
-def _resolve_llm(llm: str | None, settings: Settings) -> str | LLM:
-    """Resuelve el modelo LiteLLM según override o API keys disponibles."""
-    if llm:
-        return llm
-
-    if settings.openrouter_api_key:
-        return LLM(
-            model=settings.litellm_fast_model,
-            api_key=settings.openrouter_api_key,
-        )
-    if settings.groq_api_key:
-        return LLM(
-            model="groq/llama-3.1-8b-instant",
-            api_key=settings.groq_api_key,
-        )
-    if settings.openai_api_key:
-        return LLM(model=settings.litellm_model, api_key=settings.openai_api_key)
-    if settings.deepseek_api_key:
-        return LLM(
-            model="deepseek/deepseek-chat",
-            api_key=settings.deepseek_api_key,
-        )
-
-    # Sin keys: devolver string configurado; CrewAI fallará al instanciar si
-    # el provider exige API key. El caller puede pasar llm= explícitamente.
-    return settings.litellm_fast_model
-
-
-def create_literature_reviewer(llm: str | None = None) -> Agent:
+def create_literature_reviewer(llm: LLM | str | None = None) -> Agent:
     """Crea el agente Literature Reviewer con la tool de búsqueda bibliográfica.
 
     Args:
-        llm: Identificador LiteLLM opcional. Si es None, usa
-            ``settings.litellm_fast_model`` cuando hay API key compatible,
-            o cae a otros providers configurados.
+        llm: Instancia ``crewai.LLM``, string LiteLLM, o None para usar el
+            LLM central de Groq (``get_llm()``).
 
     Returns:
         Agente CrewAI configurado para localizar literatura Q1/Q2 con DOI y OA.
     """
-    settings = get_settings()
-    model = _resolve_llm(llm, settings)
+    model = llm if llm is not None else get_llm()
 
     return Agent(
         role="Literature Reviewer",

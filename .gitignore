@@ -26,3 +26,6 @@ workspace/*
 !workspace/.gitkeep
 output/*
 !output/.gitkeep
+!output/literature/
+output/literature/*
+!output/literature/.gitkeep

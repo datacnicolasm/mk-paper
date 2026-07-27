@@ -11,7 +11,7 @@ Estás asistiendo en el desarrollo de un framework en Python utilizando **CrewAI
 El sistema debe estructurarse jerárquica o secuencialmente con los siguientes roles clave:
 1. **Agente Investigador (Literature Reviewer):** Busca, filtra y extrae literatura científica relevante (papers recientes, cuartiles altos) usando herramientas de búsqueda y APIs académicas.
 2. **Agente Analista de Datos (Quantitative Analyst):** Escribe y ejecuta código Python para procesar datasets, aplicar modelos estadísticos/machine learning y generar matrices de resultados robustas.
-3. **Agente Redactor Científico (Academic Writer):** Estructura y redacta el artículo siguiendo estrictamente los estándares APA o IEEE, asegurando rigor metodológico, claridad académica y tono formal.
+3. **Agente Redactor Científico (Academic Writer):** Estructura y redacta el artículo siguiendo estrictamente los estándares APA, asegurando rigor metodológico, claridad académica y tono formal.
 4. **Agente Revisor de Calidad (Q1-Q2 Quality Auditor):** Actúa como par evaluador (*peer reviewer*) utilizando modelos de alta gama para auditar la validez lógica, la consistencia de los datos frente a las conclusiones y el cumplimiento de los estándares de revistas de alto impacto.
 
 ## 3. Estándares Académicos Obligatorios (Q1-Q2)

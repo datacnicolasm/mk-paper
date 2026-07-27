@@ -5,6 +5,13 @@ services:
       dockerfile: docker/Dockerfile
     env_file:
       - .env
+    environment:
+      # Secrets opcionales: se leen de .env; vacío = sin auth en S2
+      SEMANTIC_SCHOLAR_API_KEY: ${SEMANTIC_SCHOLAR_API_KEY:-}
+      UNPAYWALL_EMAIL: ${UNPAYWALL_EMAIL:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      LITELLM_MODEL: ${LITELLM_MODEL:-groq/llama-3.3-70b-versatile}
+      LITELLM_FAST_MODEL: ${LITELLM_FAST_MODEL:-groq/llama-3.1-8b-instant}
     volumes:
       - ./data:/app/data
       - ./workspace:/app/workspace
