@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      target: base
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./workspace:/app/workspace
+      - ./output:/app/output
+    stdin_open: true
+    tty: true

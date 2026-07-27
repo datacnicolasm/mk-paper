@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Environment
+.env
+
+# Tools
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# Data (keep directory structure)
+data/*
+!data/.gitkeep
+workspace/*
+!workspace/.gitkeep
+output/*
+!output/.gitkeep
