@@ -14,6 +14,7 @@ dependencies = [
     "psycopg[binary]",
     "python-dotenv",
     "pydantic-settings",
+    "httpx",
 ]
 
 [project.scripts]

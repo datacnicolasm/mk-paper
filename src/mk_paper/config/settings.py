@@ -35,6 +35,12 @@ class Settings(BaseSettings):
     output_dir: str = "/app/output"
     data_dir: str = "/app/data"
 
+    # Literature APIs
+    unpaywall_email: str | None = None
+    semantic_scholar_api_key: str | None = None
+    http_timeout_seconds: float = 30.0
+    http_max_retries: int = 3
+
     # App
     log_level: str = "INFO"
 
