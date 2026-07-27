@@ -1,0 +1,26 @@
+# Contexto del Proyecto: Sistema Multi-Agente Científico con CrewAI
+Estás asistiendo en el desarrollo de un framework en Python utilizando **CrewAI** para orquestar agentes autónomos especializados en la investigación, procesamiento de datos, análisis cuantitativo y redacción de artículos científicos con calidad de indexación Q1-Q2.
+
+## 1. Arquitectura Técnica y Stack
+- **Orquestación:** CrewAI (versión más reciente).
+- **Inferencia de Modelos:** Integración mediante LiteLLM. Uso exclusivo de APIs externas de pago para razonamiento crítico y validaciones, y modelos de código abierto rápidos/económicos (vía Groq, DeepSeek API, OpenRouter o Together AI) para tareas masivas.
+- **Procesamiento de Datos:** Scripts en Python puros ejecutados por los agentes (`pandas`, `numpy`, `statsmodels`, `scikit-learn`) para cálculos financieros, estadísticos y econométricos rigurosos.
+- **Almacenamiento:** Integración con AWS (S3/RDS) para persistencia de datasets, literatura recopilada y borradores del documento.
+
+## 2. Estructura y Roles del Crew (Agentes)
+El sistema debe estructurarse jerárquica o secuencialmente con los siguientes roles clave:
+1. **Agente Investigador (Literature Reviewer):** Busca, filtra y extrae literatura científica relevante (papers recientes, cuartiles altos) usando herramientas de búsqueda y APIs académicas.
+2. **Agente Analista de Datos (Quantitative Analyst):** Escribe y ejecuta código Python para procesar datasets, aplicar modelos estadísticos/machine learning y generar matrices de resultados robustas.
+3. **Agente Redactor Científico (Academic Writer):** Estructura y redacta el artículo siguiendo estrictamente los estándares APA o IEEE, asegurando rigor metodológico, claridad académica y tono formal.
+4. **Agente Revisor de Calidad (Q1-Q2 Quality Auditor):** Actúa como par evaluador (*peer reviewer*) utilizando modelos de alta gama para auditar la validez lógica, la consistencia de los datos frente a las conclusiones y el cumplimiento de los estándares de revistas de alto impacto.
+
+## 3. Estándares Académicos Obligatorios (Q1-Q2)
+Cualquier código, prompt o estructura generada por los agentes debe garantizar:
+- **Rigidez Metodológica:** Justificación clara de variables, pruebas de robustez en los análisis estadísticos y ausencia de sesgos de confirmación.
+- **Estructura IMRaD:** Introducción (con brecha de investigación clara), Metodología (replicable), Resultados (respaldados por código y métricas precisas) y Discusión/Conclusiones.
+- **Formato de Salida:** Los artículos deben entregarse limpios, estructurados en Markdown o LaTeX listos para compilación, con referencias cruzadas y citas formateadas correctamente.
+
+## 4. Guías de Código para Cursor
+- Escribe código Python modular, tipado (`type hints`), limpio y documentado con docstrings estilo Google.
+- Maneja adecuadamente las excepciones en las herramientas (*tools*) de CrewAI para evitar que un fallo en una API externa detenga todo el flujo del equipo.
+- Utiliza variables de entorno (`os.getenv`) para todas las credenciales (APIs, AWS). Nunca hardcodees secretos.
