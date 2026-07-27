@@ -26,8 +26,8 @@ def main() -> None:
     logger.info("Output: %s", settings.output_dir)
     logger.info("Listo para orquestar el crew (implementación pendiente)")
     logger.info(
-        "Prueba aislada de literatura: "
-        'python -m mk_paper.cli literature "tu query" --limit 5'
+        "Prueba embudo sistemático: "
+        "python -m mk_paper.cli literature --brief /app/data/briefs/example_volatility.json"
     )
 
 

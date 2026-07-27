@@ -23,11 +23,14 @@ from mk_paper.config.settings import Settings, get_settings
 logger = logging.getLogger(__name__)
 
 SEMANTIC_SCHOLAR_URL = "https://api.semanticscholar.org/graph/v1/paper/search"
+SEMANTIC_SCHOLAR_DOI_URL = "https://api.semanticscholar.org/graph/v1/paper/DOI:{doi}"
 OPENALEX_SEARCH_URL = "https://api.openalex.org/works"
 OPENALEX_WORK_URL = "https://api.openalex.org/works/https://doi.org/{doi}"
 UNPAYWALL_URL = "https://api.unpaywall.org/v2/{doi}"
 
-S2_FIELDS = "title,year,abstract,citationCount,externalIds,url,venue,authors"
+S2_FIELDS = (
+    "title,year,abstract,citationCount,externalIds,url,venue,authors,fieldsOfStudy"
+)
 _DOI_PREFIX_RE = re.compile(r"^https?://(dx\.)?doi\.org/", re.IGNORECASE)
 _CONCURRENCY = 5
 # Semantic Scholar approved key: 1 request per second across all endpoints.
@@ -175,6 +178,123 @@ async def _search_semantic_scholar(
     return papers if isinstance(papers, list) else []
 
 
+async def _fetch_s2_by_doi(
+    client: httpx.AsyncClient,
+    doi: str,
+    settings: Settings,
+) -> dict[str, Any] | None:
+    """Lookup de un paper en Semantic Scholar por DOI."""
+    headers: dict[str, str] = {"Accept": "application/json"}
+    if settings.semantic_scholar_api_key:
+        headers["x-api-key"] = settings.semantic_scholar_api_key
+    url = SEMANTIC_SCHOLAR_DOI_URL.format(doi=quote(doi, safe="/"))
+    await _wait_for_s2_slot()
+    try:
+        data = await _http_get_json(
+            client,
+            url,
+            params={"fields": S2_FIELDS},
+            headers=headers,
+            max_retries=settings.http_max_retries,
+            min_retry_wait=_S2_MIN_INTERVAL_SECONDS,
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Semantic Scholar DOI lookup failed for %s: %s", doi, exc)
+        return None
+    return data if isinstance(data, dict) else None
+
+
+async def fetch_rows_by_dois(
+    dois: list[str],
+    settings: Settings | None = None,
+) -> tuple[list[dict[str, Any]], list[str]]:
+    """Resuelve DOIs whitelist a filas normalizadas (S2 y/o OpenAlex).
+
+    Returns:
+        (rows, warnings)
+    """
+    cfg = settings or get_settings()
+    warnings: list[str] = []
+    normalized = []
+    seen: set[str] = set()
+    for raw in dois:
+        doi = _normalize_doi(raw)
+        if doi and doi not in seen:
+            seen.add(doi)
+            normalized.append(doi)
+    if not normalized:
+        return [], warnings
+
+    rows_by_doi: dict[str, dict[str, Any]] = {}
+    timeout = httpx.Timeout(cfg.http_timeout_seconds)
+    async with httpx.AsyncClient(timeout=timeout) as client:
+        for doi in normalized:
+            row: dict[str, Any] | None = None
+            if cfg.semantic_scholar_api_key:
+                paper = await _fetch_s2_by_doi(client, doi, cfg)
+                if paper:
+                    s2_rows = _s2_rows([paper])
+                    if s2_rows:
+                        row = s2_rows[0]
+            if row is None:
+                try:
+                    _, meta = await _fetch_openalex_one(
+                        client, doi, cfg, asyncio.Semaphore(1)
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    warnings.append(f"Seminal DOI {doi}: OpenAlex failed ({exc})")
+                    meta = None
+                if meta:
+                    # Re-fetch full work via OpenAlex DOI URL for title/abstract/cites.
+                    url = OPENALEX_WORK_URL.format(doi=quote(doi, safe="/"))
+                    try:
+                        work = await _http_get_json(
+                            client,
+                            url,
+                            headers=_openalex_headers(cfg) or None,
+                            max_retries=cfg.http_max_retries,
+                        )
+                    except Exception as exc:  # noqa: BLE001
+                        warnings.append(f"Seminal DOI {doi}: full OpenAlex failed ({exc})")
+                        work = None
+                    if isinstance(work, dict):
+                        oa_rows = _openalex_rows([work])
+                        if oa_rows:
+                            row = oa_rows[0]
+            if row is None:
+                warnings.append(f"Seminal DOI not resolved: {doi}")
+                continue
+            row["doi"] = doi
+            rows_by_doi[doi] = row
+
+        # Enrich OA/PDF for resolved seminals.
+        resolved = list(rows_by_doi.keys())
+        openalex_data: dict[str, dict[str, Any]] = {}
+        unpaywall_data: dict[str, dict[str, Any]] = {}
+        try:
+            openalex_data = await _enrich_openalex(client, resolved, cfg)
+        except Exception as exc:  # noqa: BLE001
+            warnings.append(f"Seminal OpenAlex enrich failed: {exc}")
+        if cfg.unpaywall_email:
+            try:
+                unpaywall_data = await _enrich_unpaywall(
+                    client, resolved, cfg.unpaywall_email, cfg
+                )
+            except Exception as exc:  # noqa: BLE001
+                warnings.append(f"Seminal Unpaywall enrich failed: {exc}")
+
+    merged = _merge_to_dataframe(
+        list(rows_by_doi.values()), openalex_data, unpaywall_data
+    )
+    if merged.empty:
+        return [], warnings
+
+    out_rows: list[dict[str, Any]] = []
+    for _, r in merged.iterrows():
+        out_rows.append(r.to_dict())
+    return out_rows, warnings
+
+
 async def _search_openalex(
     client: httpx.AsyncClient,
     query: str,
@@ -232,6 +352,12 @@ async def _fetch_openalex_one(
     primary = data.get("primary_location") or {}
     source = primary.get("source") if isinstance(primary, dict) else None
     venue = source.get("display_name") if isinstance(source, dict) else None
+    concepts = data.get("concepts") or []
+    keywords: list[str] = []
+    if isinstance(concepts, list):
+        for concept in concepts:
+            if isinstance(concept, dict) and concept.get("display_name"):
+                keywords.append(str(concept["display_name"]))
     return doi, {
         "openalex_id": data.get("id"),
         "is_oa": bool(oa.get("is_oa")),
@@ -239,6 +365,7 @@ async def _fetch_openalex_one(
         "pdf_url": best.get("pdf_url"),
         "landing_url": best.get("landing_page_url") or data.get("id"),
         "venue": venue,
+        "keywords": keywords,
     }
 
 
@@ -323,6 +450,8 @@ def _s2_rows(papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
             for a in authors_raw
             if isinstance(a, dict) and a.get("name")
         ]
+        fos = paper.get("fieldsOfStudy") or []
+        keywords = [str(x) for x in fos if x] if isinstance(fos, list) else []
         rows.append(
             {
                 "doi": doi,
@@ -332,6 +461,7 @@ def _s2_rows(papers: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "citation_count": paper.get("citationCount") or 0,
                 "venue": paper.get("venue"),
                 "authors": authors,
+                "keywords": keywords,
                 "landing_url": paper.get("url"),
                 "s2_paper_id": paper.get("paperId"),
                 "has_s2": True,
@@ -365,6 +495,15 @@ def _openalex_rows(works: list[dict[str, Any]]) -> list[dict[str, Any]]:
         source = primary.get("source") if isinstance(primary, dict) else None
         venue = source.get("display_name") if isinstance(source, dict) else None
         abstract = _reconstruct_abstract(work.get("abstract_inverted_index"))
+        concepts = work.get("concepts") or []
+        keywords: list[str] = []
+        if isinstance(concepts, list):
+            for concept in concepts:
+                if not isinstance(concept, dict):
+                    continue
+                name = concept.get("display_name")
+                if name:
+                    keywords.append(str(name))
 
         rows.append(
             {
@@ -375,6 +514,7 @@ def _openalex_rows(works: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "citation_count": work.get("cited_by_count") or 0,
                 "venue": venue,
                 "authors": authors,
+                "keywords": keywords,
                 "landing_url": best.get("landing_page_url")
                 or (primary.get("landing_page_url") if isinstance(primary, dict) else None)
                 or work.get("id"),
@@ -418,6 +558,7 @@ def _merge_to_dataframe(
                 "pdf_url": "oa_pdf_url",
                 "landing_url": "oa_landing_url",
                 "venue": "oa_venue",
+                "keywords": "oa_keywords",
             }
         )
         df = df.merge(oa_df, on="doi", how="left")
@@ -428,6 +569,7 @@ def _merge_to_dataframe(
             "oa_pdf_url",
             "oa_landing_url",
             "oa_venue",
+            "oa_keywords",
             "openalex_id",
         ):
             if col not in df.columns:
@@ -503,6 +645,24 @@ def _merge_to_dataframe(
         ),
         axis=1,
     )
+
+    def _merge_keywords(row: pd.Series) -> list[str]:
+        merged: list[str] = []
+        seen: set[str] = set()
+        for source in (row.get("keywords"), row.get("oa_keywords")):
+            if not isinstance(source, list):
+                continue
+            for item in source:
+                text = str(item).strip()
+                key = text.lower()
+                if text and key not in seen:
+                    seen.add(key)
+                    merged.append(text)
+        return merged
+
+    if "keywords" not in df.columns:
+        df["keywords"] = [[] for _ in range(len(df))]
+    df["keywords"] = df.apply(_merge_keywords, axis=1)
 
     # Preservar flags de la fuente primaria y marcar enrich.
     if primary_is_oa is not None:
@@ -583,6 +743,9 @@ def _to_json_payload(
                 "citation_count": citation_count,
                 "venue": row.get("venue") if pd.notna(row.get("venue")) else None,
                 "authors": author_list,
+                "keywords": list(row.get("keywords") or [])
+                if isinstance(row.get("keywords"), list)
+                else [],
                 "is_oa": bool(row.get("is_oa")),
                 "oa_status": row.get("oa_status")
                 if pd.notna(row.get("oa_status"))
@@ -740,3 +903,25 @@ async def search_scientific_literature(query: str, limit: int = 10) -> str:
             ensure_ascii=False,
             indent=2,
         )
+
+
+# Re-export hybrid alignment API for literature tooling consumers.
+from mk_paper.tools.alignment import (  # noqa: E402
+    assign_quadrant,
+    brief_to_profile_text,
+    compute_alignment_scores,
+    historical_centrality,
+    paper_to_document,
+    score_and_route_candidates,
+)
+
+__all__ = [
+    "search_scientific_literature",
+    "fetch_rows_by_dois",
+    "brief_to_profile_text",
+    "paper_to_document",
+    "compute_alignment_scores",
+    "historical_centrality",
+    "assign_quadrant",
+    "score_and_route_candidates",
+]

@@ -12,6 +12,9 @@ from typing import Any
 
 import pandas as pd
 
+from mk_paper.models.research_brief import LiteratureReviewOutput
+from mk_paper.tools.systematic_review import review_to_markdown
+
 logger = logging.getLogger(__name__)
 
 _SLUG_RE = re.compile(r"[^a-z0-9]+")
@@ -19,13 +22,24 @@ _SLUG_RE = re.compile(r"[^a-z0-9]+")
 
 @dataclass(frozen=True)
 class LiteratureArtifacts:
-    """Rutas de los artefactos persistidos de una búsqueda."""
+    """Rutas de los artefactos persistidos de una búsqueda cruda."""
 
     run_dir: Path
     json_path: Path
     csv_path: Path
     latest_json: Path
     latest_csv: Path
+
+
+@dataclass(frozen=True)
+class ReviewArtifacts:
+    """Rutas de los artefactos del embudo sistemático clasificado."""
+
+    run_dir: Path
+    json_path: Path
+    md_path: Path
+    latest_json: Path
+    latest_md: Path
 
 
 def _slugify(text: str, max_len: int = 48) -> str:
@@ -46,25 +60,7 @@ def save_literature_results(
     output_dir: str | Path,
     query: str,
 ) -> LiteratureArtifacts:
-    """Persiste el JSON de búsqueda y un CSV tabular para inspección rápida.
-
-    Estructura::
-
-        output/literature/
-          YYYYMMDDTHHMMSSZ_slug/
-            results.json
-            results.csv
-          latest.json   # copia del último JSON
-          latest.csv    # copia del último CSV
-
-    Args:
-        payload: Diccionario con query, count, papers, warnings.
-        output_dir: Directorio base de salida de la app.
-        query: Términos de búsqueda (para el nombre del run).
-
-    Returns:
-        Rutas de los artefactos generados.
-    """
+    """Persiste el JSON de búsqueda cruda y un CSV tabular."""
     root = _literature_root(output_dir)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     run_dir = root / f"{stamp}_{_slugify(query)}"
@@ -124,11 +120,81 @@ def save_literature_results(
     df.to_csv(csv_path, index=False)
     df.to_csv(latest_csv, index=False)
 
-    logger.info("Resultados guardados en %s", run_dir)
+    logger.info("Resultados crudos guardados en %s", run_dir)
     return LiteratureArtifacts(
         run_dir=run_dir,
         json_path=json_path,
         csv_path=csv_path,
         latest_json=latest_json,
         latest_csv=latest_csv,
+    )
+
+
+def save_literature_review(
+    output: LiteratureReviewOutput | dict[str, Any],
+    *,
+    output_dir: str | Path,
+) -> ReviewArtifacts:
+    """Persiste review.json + review.md clasificado (Core vs Conceptual)."""
+    import shutil
+
+    if isinstance(output, dict):
+        review = LiteratureReviewOutput.model_validate(output)
+    else:
+        review = output
+
+    root = _literature_root(output_dir)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    run_dir = root / f"{stamp}_{_slugify(review.brief_title)}"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    pdf_dir = run_dir / "pdfs"
+    text_dir = run_dir / "fulltext"
+    pdf_dir.mkdir(exist_ok=True)
+    text_dir.mkdir(exist_ok=True)
+
+    # Copiar PDFs locales y guardar excerpts de texto de papers core.
+    for paper in [
+        *review.core_findings,
+        *review.conceptual_references,
+        *review.seminal_literature,
+    ]:
+        slug = _slugify(paper.doi or paper.title or "paper")
+        if paper.pdf_local_path:
+            src = Path(paper.pdf_local_path)
+            if src.exists():
+                dest = pdf_dir / f"{slug}.pdf"
+                try:
+                    shutil.copy2(src, dest)
+                    paper.pdf_local_path = str(dest)
+                except OSError as exc:
+                    logger.warning("Could not copy PDF %s: %s", src, exc)
+        if paper.full_text_excerpt:
+            (text_dir / f"{slug}.txt").write_text(
+                paper.full_text_excerpt, encoding="utf-8"
+            )
+
+    payload = review.to_dict()
+    payload["persisted_at"] = datetime.now(timezone.utc).isoformat()
+    payload["run_id"] = run_dir.name
+
+    json_path = run_dir / "review.json"
+    md_path = run_dir / "review.md"
+    latest_json = root / "latest_review.json"
+    latest_md = root / "latest_review.md"
+
+    json_text = json.dumps(payload, ensure_ascii=False, indent=2)
+    md_text = review_to_markdown(review)
+
+    json_path.write_text(json_text, encoding="utf-8")
+    md_path.write_text(md_text, encoding="utf-8")
+    latest_json.write_text(json_text, encoding="utf-8")
+    latest_md.write_text(md_text, encoding="utf-8")
+
+    logger.info("Review sistemático guardado en %s", run_dir)
+    return ReviewArtifacts(
+        run_dir=run_dir,
+        json_path=json_path,
+        md_path=md_path,
+        latest_json=latest_json,
+        latest_md=latest_md,
     )

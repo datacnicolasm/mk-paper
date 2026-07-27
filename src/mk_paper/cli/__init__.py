@@ -18,7 +18,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     literature_parser = subparsers.add_parser(
         "literature",
-        help="Busca literatura científica y persiste resultados en output/literature/",
+        help=(
+            "Revisión sistemática (ResearchBrief + Groq) o búsqueda cruda; "
+            "persiste en output/literature/"
+        ),
     )
     add_literature_parser(literature_parser)
     literature_parser.set_defaults(handler=run_literature_search_cli)

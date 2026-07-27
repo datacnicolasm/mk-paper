@@ -22,6 +22,10 @@ venv/
 # Data (keep directory structure)
 data/*
 !data/.gitkeep
+!data/briefs/
+data/briefs/*
+!data/briefs/.gitkeep
+!data/briefs/*.json
 workspace/*
 !workspace/.gitkeep
 output/*

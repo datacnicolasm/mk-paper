@@ -61,6 +61,24 @@ class Settings(BaseSettings):
     http_timeout_seconds: float = 30.0
     http_max_retries: int = 3
 
+    # PDF full-text extraction (OA papers)
+    pdf_fulltext_enabled: bool = True
+    pdf_max_pages: int = 12
+    pdf_max_chars: int = 14000
+    pdf_download_concurrency: int = 3
+
+    # Hybrid alignment (TF-IDF + cosine)
+    alignment_high_threshold: float = 0.35
+    alignment_low_threshold: float = 0.12
+    alignment_max_features: int = 12000
+
+    # Seminal / foundational literature
+    seminal_min_age_years: int = 10
+    seminal_cites_per_year: float = 50.0
+    seminal_min_citations: int = 500
+    seminal_alignment_floor: float = 0.04
+    seminal_history_boost: float = 0.15
+
     # App
     log_level: str = "INFO"
 
