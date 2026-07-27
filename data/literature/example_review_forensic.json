@@ -1,0 +1,79 @@
+{
+  "brief_title": "Auditoría forense financiera: insolvencia y manipulación contable en PYMES colombianas (2017-2024)",
+  "primary_sources_used": ["semantic_scholar", "openalex"],
+  "candidate_count": 4,
+  "discarded_count": 0,
+  "seminal_literature": [
+    {
+      "doi": "10.2308/accr.1999.74.4.445",
+      "title": "The Detection of Earnings Manipulation",
+      "year": 1999,
+      "authors": ["Messod D. Beneish"],
+      "venue": "Financial Analysts Journal",
+      "level": "seminal",
+      "utility": 0.95,
+      "alignment_score": 0.7,
+      "seminal_reason": "whitelist",
+      "key_findings": [
+        "El M-Score resume señales contables asociadas a manipulación de earnings.",
+        "Provee un marco teórico-forense para red flags en estados financieros."
+      ],
+      "citation_context": "Citar en Introducción/Marco teórico como fundamento del Beneish M-Score.",
+      "suggested_section": "Introducción / Marco teórico (Seminal)"
+    },
+    {
+      "doi": "10.1086/209658",
+      "title": "Value Investing: The Use of Historical Financial Statement Information to Separate Winners from Losers",
+      "year": 2000,
+      "authors": ["Joseph D. Piotroski"],
+      "venue": "The Journal of Accounting Research",
+      "level": "seminal",
+      "utility": 0.9,
+      "alignment_score": 0.65,
+      "seminal_reason": "whitelist",
+      "key_findings": [
+        "El F-Score agrega señales de solidez financiera a partir de estados contables.",
+        "Útil como baseline fundamental frente a clasificadores de ML."
+      ],
+      "citation_context": "Citar en Introducción/Marco teórico junto al M-Score.",
+      "suggested_section": "Introducción / Marco teórico (Seminal)"
+    }
+  ],
+  "conceptual_references": [
+    {
+      "doi": "10.0000/example.conceptual.forensic-sme",
+      "title": "Forensic accounting signals and SME distress: a conceptual framing for emerging markets",
+      "year": 2018,
+      "authors": ["Carla Mendoza", "Andrés López"],
+      "venue": "Journal of Forensic Accounting Research",
+      "level": "conceptual",
+      "utility": 0.55,
+      "alignment_score": 0.48,
+      "key_findings": [
+        "En mercados emergentes, la combinación de scores forenses y datos panel mejora el diagnóstico de distress.",
+        "La manipulación contable y la insolvencia deben modelarse de forma conjunta en PYMES."
+      ],
+      "citation_context": "Usar en Introducción para contextualizar PYMES y mercados emergentes.",
+      "suggested_section": "Introducción / Marco conceptual"
+    }
+  ],
+  "core_findings": [
+    {
+      "doi": "10.0000/example.core.rf-insolvency-co",
+      "title": "Random forests for insolvency prediction in Colombian SMEs: an empirical benchmark",
+      "year": 2022,
+      "authors": ["Laura Gómez", "Diego Ramírez"],
+      "venue": "Latin American Journal of Financial Econometrics",
+      "level": "core",
+      "utility": 1.0,
+      "alignment_score": 0.72,
+      "key_findings": [
+        "Random Forest alcanza F1 competitivo frente a scores contables simples en paneles PYME.",
+        "Reporta F1 de referencia ≈ 0.78 en hold-out para insolvencia a 12 meses."
+      ],
+      "citation_context": "Citar en Discusión para benchmarking empírico del clasificador local.",
+      "suggested_section": "Discusión / Resultados (Core)"
+    }
+  ],
+  "warnings": []
+}

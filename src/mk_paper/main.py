@@ -7,7 +7,7 @@ from mk_paper.runtime import ensure_directories, setup_logging
 
 
 def main() -> None:
-    """Punto de entrada del crew."""
+    """Punto de entrada del paquete (mensaje + tip de pipeline)."""
     settings = get_settings()
     setup_logging(settings.log_level)
     logger = logging.getLogger(__name__)
@@ -20,14 +20,16 @@ def main() -> None:
 
     logger.info("mk-paper iniciado")
     logger.info("Modelo principal: %s", settings.litellm_model)
-    logger.info("Modelo rápido: %s", settings.litellm_fast_model)
-    logger.info("Groq configurado: %s", bool(settings.groq_api_key))
     logger.info("Workspace: %s", settings.workspace_dir)
     logger.info("Output: %s", settings.output_dir)
-    logger.info("Listo para orquestar el crew (implementación pendiente)")
     logger.info(
-        "Prueba embudo sistemático: "
-        "python -m mk_paper.cli literature --brief /app/data/briefs/example_volatility.json"
+        "Pipeline E2E: python -m mk_paper run-pipeline "
+        "--research-brief data/briefs/example_research.json "
+        "--method-brief data/briefs/example_method.json "
+        "--dataset data/workspace/pymes_colombia.csv"
+    )
+    logger.info(
+        "Componentes: python -m mk_paper.cli {literature|analysis|paper|audit}"
     )
 
 

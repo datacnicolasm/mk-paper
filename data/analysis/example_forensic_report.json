@@ -1,0 +1,113 @@
+{
+  "brief_title": "Clasificación de insolvencia PYMES CO con Random Forest y scores forenses",
+  "task_type": "classification",
+  "dataset_path": "datasets/example_returns.csv",
+  "dataset_schema": {
+    "n_rows": 200,
+    "n_cols": 4,
+    "columns": ["realized_vol", "lag_vol", "momentum", "bid_ask_spread"],
+    "dtypes": {
+      "realized_vol": "float64",
+      "lag_vol": "float64",
+      "momentum": "float64",
+      "bid_ask_spread": "float64"
+    },
+    "missing_counts": {
+      "realized_vol": 0,
+      "lag_vol": 0,
+      "momentum": 0,
+      "bid_ask_spread": 0
+    },
+    "rows_after_dropna": 200
+  },
+  "primary_metric": "f1",
+  "best_model": "random_forest_clf",
+  "best_score": 0.8125,
+  "model_results": [
+    {
+      "model_id": "random_forest_clf",
+      "best_params": {"n_estimators": 200, "max_depth": 6, "min_samples_leaf": 2},
+      "metrics_train": {
+        "accuracy": 0.9,
+        "precision": 0.88,
+        "recall": 0.86,
+        "f1": 0.87
+      },
+      "metrics_test": {
+        "accuracy": 0.84,
+        "precision": 0.81,
+        "recall": 0.815,
+        "f1": 0.8125
+      },
+      "cv_mean": 0.801,
+      "cv_std": 0.022,
+      "coefficients": {},
+      "feature_importances": {
+        "beneish_m_score": 0.31,
+        "piotroski_f_score": 0.27,
+        "lag_vol": 0.22,
+        "momentum": 0.12,
+        "bid_ask_spread": 0.08
+      },
+      "n_iterations": 8,
+      "notes": [
+        "Features proxy: Beneish M-Score y Piotroski F-Score junto a covariables de mercado del dataset local de ejemplo."
+      ]
+    },
+    {
+      "model_id": "logistic",
+      "best_params": {"C": 1.0},
+      "metrics_train": {
+        "accuracy": 0.78,
+        "precision": 0.76,
+        "recall": 0.74,
+        "f1": 0.75
+      },
+      "metrics_test": {
+        "accuracy": 0.74,
+        "precision": 0.72,
+        "recall": 0.71,
+        "f1": 0.715
+      },
+      "cv_mean": 0.702,
+      "cv_std": 0.031,
+      "coefficients": {
+        "beneish_m_score": 0.42,
+        "piotroski_f_score": -0.35,
+        "lag_vol": 0.11,
+        "momentum": 0.05,
+        "bid_ask_spread": 0.03
+      },
+      "feature_importances": {},
+      "n_iterations": 4,
+      "notes": ["Baseline logístico sobre los mismos scores forenses."]
+    }
+  ],
+  "descriptive_tables": {},
+  "robustness_tests": {
+    "confusion_matrix": [[120, 18], [14, 48]],
+    "classification_report": {
+      "0": {"precision": 0.9, "recall": 0.87, "f1-score": 0.88, "support": 138},
+      "1": {"precision": 0.73, "recall": 0.77, "f1-score": 0.75, "support": 62},
+      "accuracy": 0.84
+    }
+  },
+  "iteration_log": [],
+  "tables": {},
+  "literature_snapshot": {},
+  "literature_benchmarking": [
+    {
+      "metric": "f1",
+      "observed": 0.8125,
+      "literature_reference": 0.78,
+      "higher_is_better": true,
+      "delta": 0.0325,
+      "source": "10.0000/example.core.rf-insolvency-co",
+      "note": "F1 de referencia reportado para Random Forest en PYMES colombianas (ejemplo curado)."
+    }
+  ],
+  "analytical_discussion": "El Random Forest local (F1=0.8125) supera levemente el benchmark core ilustrativo (F1≈0.78). Las importancias destacan beneish_m_score y piotroski_f_score, coherente con el marco forense seminal. Interpretar con mesura: el dataset de ejemplo es sintético/proxy y no constituye evidencia causal sobre el universo PYME 2017-2024.",
+  "warnings": [
+    "Reporte de ejemplo forense: métricas ilustrativas para el Scientific Writer; no sustituyen un análisis productivo sobre panel real."
+  ]
+}

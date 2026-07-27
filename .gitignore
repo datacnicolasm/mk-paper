@@ -19,13 +19,31 @@ venv/
 .vscode/
 .idea/
 
-# Data (keep directory structure)
+# Data: ignore by default, track fixtures needed to run the pipeline
 data/*
 !data/.gitkeep
 !data/briefs/
 data/briefs/*
 !data/briefs/.gitkeep
 !data/briefs/*.json
+!data/datasets/
+data/datasets/*
+!data/datasets/.gitkeep
+!data/datasets/**
+!data/literature/
+data/literature/*
+!data/literature/.gitkeep
+!data/literature/*.json
+!data/analysis/
+data/analysis/*
+!data/analysis/.gitkeep
+!data/analysis/*.json
+!data/workspace/
+data/workspace/*
+!data/workspace/.gitkeep
+!data/workspace/**
+
+# Workspace / generated outputs (never commit runs)
 workspace/*
 !workspace/.gitkeep
 output/*

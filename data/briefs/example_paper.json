@@ -1,0 +1,9 @@
+{
+  "title": "Auditoría forense financiera en PYMES colombianas (2017-2024): Random Forest, Beneish M-Score y Piotroski F-Score",
+  "literature_review_path": "literature/example_review_forensic.json",
+  "analysis_report_path": "analysis/example_forensic_report.json",
+  "authors": ["Equipo mk-paper", "Auditoría Forense Cuantitativa"],
+  "language": "es",
+  "include_latex": true,
+  "cite_all_catalog": false
+}

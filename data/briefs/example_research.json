@@ -1,0 +1,25 @@
+{
+  "title": "Auditoría forense e insolvencia en PYMES colombianas (2017-2024)",
+  "objectives": [
+    "Sintetizar evidencia sobre scores forenses (Beneish M-Score, Piotroski F-Score) y ML para distress",
+    "Identificar hallazgos empíricos replicables en mercados emergentes",
+    "Delimitar el vacío de conocimiento para baselines locales transparentes"
+  ],
+  "research_questions": [
+    "¿Qué señales contables forenses predicen manipulación e insolvencia en PYMES?",
+    "¿Cómo se comparan baselines de scores clásicos frente a clasificadores tipo Random Forest?"
+  ],
+  "variables": {
+    "independent": ["Beneish M-Score", "Piotroski F-Score", "Random Forest", "financial ratios"],
+    "dependent": ["insolvency", "earnings manipulation", "distress probability"],
+    "controls": ["firm size", "sector", "macro regime"]
+  },
+  "methodology": "Revisión sistemática con énfasis en estudios empíricos cuantitativos y robustez out-of-sample",
+  "domain": "forensic accounting / financial distress / emerging markets SMEs",
+  "years_back": 5,
+  "max_results": 8,
+  "seminal_dois": [
+    "10.2308/accr.1999.74.4.445",
+    "10.1086/209658"
+  ]
+}

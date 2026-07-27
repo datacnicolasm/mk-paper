@@ -1,0 +1,791 @@
+{
+  "brief_title": "Realized volatility regression baseline",
+  "task_type": "regression",
+  "dataset_path": "/app/data/datasets/example_returns.csv",
+  "dataset_schema": {
+    "n_rows": 200,
+    "n_cols": 4,
+    "columns": [
+      "realized_vol",
+      "lag_vol",
+      "momentum",
+      "bid_ask_spread"
+    ],
+    "dtypes": {
+      "realized_vol": "float64",
+      "lag_vol": "float64",
+      "momentum": "float64",
+      "bid_ask_spread": "float64"
+    },
+    "missing_counts": {
+      "realized_vol": 0,
+      "lag_vol": 0,
+      "momentum": 0,
+      "bid_ask_spread": 0
+    },
+    "rows_after_dropna": 200
+  },
+  "primary_metric": "rmse",
+  "best_model": "ols",
+  "best_score": 0.006076195236390383,
+  "model_results": [
+    {
+      "model_id": "ols",
+      "best_params": {},
+      "metrics_train": {
+        "mse": 2.2884878195060817e-05,
+        "rmse": 0.004783814189019136,
+        "mae": 0.003900416734021423,
+        "r2": 0.9913283655009365
+      },
+      "metrics_test": {
+        "mse": 3.692014855073319e-05,
+        "rmse": 0.006076195236390383,
+        "mae": 0.004991218928666397,
+        "r2": 0.9849225892869616,
+        "aic": -1247.545142390849,
+        "bic": -1235.2444471299136
+      },
+      "cv_mean": null,
+      "cv_std": null,
+      "coefficients": {
+        "const": 0.009004905910283943,
+        "lag_vol": 0.7516060368951152,
+        "momentum": 0.04981157779073402,
+        "bid_ask_spread": 0.02389241159745982
+      },
+      "feature_importances": {},
+      "n_iterations": 1,
+      "notes": []
+    },
+    {
+      "model_id": "ridge",
+      "best_params": {
+        "alpha": 0.01
+      },
+      "metrics_train": {
+        "mse": 3.161971725159624e-05,
+        "rmse": 0.005623141226360605,
+        "mae": 0.004553468834950991,
+        "r2": 0.9880185234707191
+      },
+      "metrics_test": {
+        "mse": 5.422929843617712e-05,
+        "rmse": 0.007364054483514983,
+        "mae": 0.0058668510904487485,
+        "r2": 0.9778538971998276
+      },
+      "cv_mean": 0.006166919753925582,
+      "cv_std": 0.0003728828773402274,
+      "coefficients": {
+        "lag_vol": 0.41458413110511466,
+        "momentum": 0.04954642102141184,
+        "bid_ask_spread": 0.023007782209234256,
+        "intercept": 0.016189996582121963
+      },
+      "feature_importances": {
+        "lag_vol": 0.41458413110511466,
+        "momentum": 0.04954642102141184,
+        "bid_ask_spread": 0.023007782209234256
+      },
+      "n_iterations": 4,
+      "notes": []
+    }
+  ],
+  "descriptive_tables": {
+    "summary_statistics": [
+      {
+        "variable": "realized_vol",
+        "n": 200,
+        "mean": 0.036325726429748975,
+        "std": 0.05130215023463117,
+        "min": -0.1024136918696765,
+        "p50": 0.03478602720490015,
+        "max": 0.1919649902597915
+      },
+      {
+        "variable": "lag_vol",
+        "n": 200,
+        "mean": 0.019709646826945204,
+        "std": 0.008787497274823924,
+        "min": 0.001,
+        "p50": 0.01948145769097705,
+        "max": 0.0491386246600732
+      },
+      {
+        "variable": "momentum",
+        "n": 200,
+        "mean": 0.02007761463249106,
+        "std": 1.0195048730914034,
+        "min": -2.5666584409312976,
+        "p50": 0.060449700624793504,
+        "max": 2.905067169240407
+      },
+      {
+        "variable": "bid_ask_spread",
+        "n": 200,
+        "mean": 0.48688992826345495,
+        "std": 0.20195363783147263,
+        "min": 0.01,
+        "p50": 0.484321896652688,
+        "max": 1.0195347453191663
+      }
+    ]
+  },
+  "robustness_tests": {
+    "vif": [
+      {
+        "variable": "lag_vol",
+        "vif": 3.3485032496566602
+      },
+      {
+        "variable": "momentum",
+        "vif": 1.0055634063571526
+      },
+      {
+        "variable": "bid_ask_spread",
+        "vif": 3.3513868499200936
+      }
+    ],
+    "residual_diagnostics": {
+      "jarque_bera_stat": 1.7925774850245983,
+      "jarque_bera_pvalue": 0.4080813478313624,
+      "breusch_pagan_stat": 2.436618561748638,
+      "breusch_pagan_pvalue": 0.4868544915767158
+    }
+  },
+  "iteration_log": [
+    {
+      "model_id": "ols",
+      "params": {},
+      "primary_metric": "rmse",
+      "score_test": 0.006076195236390383,
+      "metrics_test": {
+        "mse": 3.692014855073319e-05,
+        "rmse": 0.006076195236390383,
+        "mae": 0.004991218928666397,
+        "r2": 0.9849225892869616,
+        "aic": -1247.545142390849,
+        "bic": -1235.2444471299136
+      },
+      "cv_mean": null,
+      "literature_comparison": [
+        {
+          "model_id": "ols",
+          "params": {},
+          "metric": "rmse",
+          "observed": 0.006076195236390383,
+          "literature_reference": 0.01,
+          "delta_observed_minus_ref": -0.003923804763609617,
+          "higher_is_better": false,
+          "verdict": "better",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+        },
+        {
+          "model_id": "ols",
+          "params": {},
+          "metric": "r2",
+          "observed": 0.9849225892869616,
+          "literature_reference": 0.85,
+          "delta_observed_minus_ref": 0.13492258928696166,
+          "higher_is_better": true,
+          "verdict": "better",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+        }
+      ]
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 0.01
+      },
+      "primary_metric": "rmse",
+      "score_test": 0.007364054483514983,
+      "metrics_test": {
+        "mse": 5.422929843617712e-05,
+        "rmse": 0.007364054483514983,
+        "mae": 0.0058668510904487485,
+        "r2": 0.9778538971998276
+      },
+      "cv_mean": 0.006166919753925582,
+      "literature_comparison": [
+        {
+          "model_id": "ridge",
+          "params": {
+            "alpha": 0.01
+          },
+          "metric": "rmse",
+          "observed": 0.007364054483514983,
+          "literature_reference": 0.01,
+          "delta_observed_minus_ref": -0.002635945516485017,
+          "higher_is_better": false,
+          "verdict": "better",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+        },
+        {
+          "model_id": "ridge",
+          "params": {
+            "alpha": 0.01
+          },
+          "metric": "r2",
+          "observed": 0.9778538971998276,
+          "literature_reference": 0.85,
+          "delta_observed_minus_ref": 0.12785389719982765,
+          "higher_is_better": true,
+          "verdict": "better",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+        }
+      ]
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 0.1
+      },
+      "primary_metric": "rmse",
+      "score_test": 0.009368025639029819,
+      "metrics_test": {
+        "mse": 8.775990437352004e-05,
+        "rmse": 0.009368025639029819,
+        "mae": 0.007523474461432628,
+        "r2": 0.9641607042680693
+      },
+      "cv_mean": 0.007937719128006017,
+      "literature_comparison": [
+        {
+          "model_id": "ridge",
+          "params": {
+            "alpha": 0.1
+          },
+          "metric": "rmse",
+          "observed": 0.009368025639029819,
+          "literature_reference": 0.01,
+          "delta_observed_minus_ref": -0.0006319743609701813,
+          "higher_is_better": false,
+          "verdict": "better",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+        },
+        {
+          "model_id": "ridge",
+          "params": {
+            "alpha": 0.1
+          },
+          "metric": "r2",
+          "observed": 0.9641607042680693,
+          "literature_reference": 0.85,
+          "delta_observed_minus_ref": 0.11416070426806935,
+          "higher_is_better": true,
+          "verdict": "better",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+        }
+      ]
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 1.0
+      },
+      "primary_metric": "rmse",
+      "score_test": 0.009832468337726233,
+      "metrics_test": {
+        "mse": 9.667743361238886e-05,
+        "rmse": 0.009832468337726233,
+        "mae": 0.007984290818090005,
+        "r2": 0.9605189732307416
+      },
+      "cv_mean": 0.008307053110841898,
+      "literature_comparison": [
+        {
+          "model_id": "ridge",
+          "params": {
+            "alpha": 1.0
+          },
+          "metric": "rmse",
+          "observed": 0.009832468337726233,
+          "literature_reference": 0.01,
+          "delta_observed_minus_ref": -0.00016753166227376735,
+          "higher_is_better": false,
+          "verdict": "better",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+        },
+        {
+          "model_id": "ridge",
+          "params": {
+            "alpha": 1.0
+          },
+          "metric": "r2",
+          "observed": 0.9605189732307416,
+          "literature_reference": 0.85,
+          "delta_observed_minus_ref": 0.11051897323074167,
+          "higher_is_better": true,
+          "verdict": "better",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+        }
+      ]
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 10.0
+      },
+      "primary_metric": "rmse",
+      "score_test": 0.010424207841664956,
+      "metrics_test": {
+        "mse": 0.00010866410912622917,
+        "rmse": 0.010424207841664956,
+        "mae": 0.00866201115654637,
+        "r2": 0.9556238675255805
+      },
+      "cv_mean": 0.009717506222876161,
+      "literature_comparison": [
+        {
+          "model_id": "ridge",
+          "params": {
+            "alpha": 10.0
+          },
+          "metric": "rmse",
+          "observed": 0.010424207841664956,
+          "literature_reference": 0.01,
+          "delta_observed_minus_ref": 0.00042420784166495584,
+          "higher_is_better": false,
+          "verdict": "worse",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+        },
+        {
+          "model_id": "ridge",
+          "params": {
+            "alpha": 10.0
+          },
+          "metric": "r2",
+          "observed": 0.9556238675255805,
+          "literature_reference": 0.85,
+          "delta_observed_minus_ref": 0.1056238675255805,
+          "higher_is_better": true,
+          "verdict": "better",
+          "source": "synthetic-lit-baseline / example review",
+          "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+        }
+      ]
+    }
+  ],
+  "tables": {
+    "model_comparison": [
+      {
+        "model_id": "ols",
+        "best_params": "{}",
+        "test_mse": 3.692014855073319e-05,
+        "test_rmse": 0.006076195236390383,
+        "test_mae": 0.004991218928666397,
+        "test_r2": 0.9849225892869616,
+        "test_aic": -1247.545142390849,
+        "test_bic": -1235.2444471299136,
+        "cv_mean": null,
+        "n_iterations": 1
+      },
+      {
+        "model_id": "ridge",
+        "best_params": "{\"alpha\": 0.01}",
+        "test_mse": 5.422929843617712e-05,
+        "test_rmse": 0.007364054483514983,
+        "test_mae": 0.0058668510904487485,
+        "test_r2": 0.9778538971998276,
+        "cv_mean": 0.006166919753925582,
+        "n_iterations": 4
+      }
+    ],
+    "coefficients_or_importances": [
+      {
+        "model_id": "ols",
+        "term": "const",
+        "value": 0.009004905910283943,
+        "kind": "coefficient"
+      },
+      {
+        "model_id": "ols",
+        "term": "lag_vol",
+        "value": 0.7516060368951152,
+        "kind": "coefficient"
+      },
+      {
+        "model_id": "ols",
+        "term": "momentum",
+        "value": 0.04981157779073402,
+        "kind": "coefficient"
+      },
+      {
+        "model_id": "ols",
+        "term": "bid_ask_spread",
+        "value": 0.02389241159745982,
+        "kind": "coefficient"
+      },
+      {
+        "model_id": "ridge",
+        "term": "lag_vol",
+        "value": 0.41458413110511466,
+        "kind": "coefficient"
+      },
+      {
+        "model_id": "ridge",
+        "term": "momentum",
+        "value": 0.04954642102141184,
+        "kind": "coefficient"
+      },
+      {
+        "model_id": "ridge",
+        "term": "bid_ask_spread",
+        "value": 0.023007782209234256,
+        "kind": "coefficient"
+      },
+      {
+        "model_id": "ridge",
+        "term": "intercept",
+        "value": 0.016189996582121963,
+        "kind": "coefficient"
+      }
+    ],
+    "literature_benchmarking": [
+      {
+        "model_id": "ols",
+        "params": {},
+        "metric": "rmse",
+        "observed": 0.006076195236390383,
+        "literature_reference": 0.01,
+        "delta_observed_minus_ref": -0.003923804763609617,
+        "higher_is_better": false,
+        "verdict": "better",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+      },
+      {
+        "model_id": "ols",
+        "params": {},
+        "metric": "r2",
+        "observed": 0.9849225892869616,
+        "literature_reference": 0.85,
+        "delta_observed_minus_ref": 0.13492258928696166,
+        "higher_is_better": true,
+        "verdict": "better",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+      },
+      {
+        "model_id": "ridge",
+        "params": {
+          "alpha": 0.01
+        },
+        "metric": "rmse",
+        "observed": 0.007364054483514983,
+        "literature_reference": 0.01,
+        "delta_observed_minus_ref": -0.002635945516485017,
+        "higher_is_better": false,
+        "verdict": "better",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+      },
+      {
+        "model_id": "ridge",
+        "params": {
+          "alpha": 0.01
+        },
+        "metric": "r2",
+        "observed": 0.9778538971998276,
+        "literature_reference": 0.85,
+        "delta_observed_minus_ref": 0.12785389719982765,
+        "higher_is_better": true,
+        "verdict": "better",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+      },
+      {
+        "model_id": "ridge",
+        "params": {
+          "alpha": 0.1
+        },
+        "metric": "rmse",
+        "observed": 0.009368025639029819,
+        "literature_reference": 0.01,
+        "delta_observed_minus_ref": -0.0006319743609701813,
+        "higher_is_better": false,
+        "verdict": "better",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+      },
+      {
+        "model_id": "ridge",
+        "params": {
+          "alpha": 0.1
+        },
+        "metric": "r2",
+        "observed": 0.9641607042680693,
+        "literature_reference": 0.85,
+        "delta_observed_minus_ref": 0.11416070426806935,
+        "higher_is_better": true,
+        "verdict": "better",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+      },
+      {
+        "model_id": "ridge",
+        "params": {
+          "alpha": 1.0
+        },
+        "metric": "rmse",
+        "observed": 0.009832468337726233,
+        "literature_reference": 0.01,
+        "delta_observed_minus_ref": -0.00016753166227376735,
+        "higher_is_better": false,
+        "verdict": "better",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+      },
+      {
+        "model_id": "ridge",
+        "params": {
+          "alpha": 1.0
+        },
+        "metric": "r2",
+        "observed": 0.9605189732307416,
+        "literature_reference": 0.85,
+        "delta_observed_minus_ref": 0.11051897323074167,
+        "higher_is_better": true,
+        "verdict": "better",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+      },
+      {
+        "model_id": "ridge",
+        "params": {
+          "alpha": 10.0
+        },
+        "metric": "rmse",
+        "observed": 0.010424207841664956,
+        "literature_reference": 0.01,
+        "delta_observed_minus_ref": 0.00042420784166495584,
+        "higher_is_better": false,
+        "verdict": "worse",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+      },
+      {
+        "model_id": "ridge",
+        "params": {
+          "alpha": 10.0
+        },
+        "metric": "r2",
+        "observed": 0.9556238675255805,
+        "literature_reference": 0.85,
+        "delta_observed_minus_ref": 0.1056238675255805,
+        "higher_is_better": true,
+        "verdict": "better",
+        "source": "synthetic-lit-baseline / example review",
+        "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+      }
+    ]
+  },
+  "literature_snapshot": {
+    "brief_title": "Volatility forecasting with machine learning in financial markets",
+    "source_format": "json",
+    "candidate_count": 4,
+    "discarded_count": 0,
+    "n_core": 1,
+    "n_conceptual": 1,
+    "n_seminal": 1,
+    "evidence": [
+      {
+        "level": "core",
+        "doi": "10.0000/example.core.vol",
+        "title": "Machine learning forecasts of realized volatility: an illustrative core paper",
+        "year": 2023,
+        "utility": 1.0,
+        "alignment_score": 0.62,
+        "key_findings": [
+          "Lagged realized volatility remains a strong baseline (RMSE around 0.01 on daily data).",
+          "Linear and ridge models remain competitive against shallow ML on short samples."
+        ],
+        "citation_context": "Cite in Results/Discussion as empirical baseline for realized-volatility forecasting.",
+        "suggested_section": "Results / Discussion"
+      },
+      {
+        "level": "conceptual",
+        "doi": "10.0000/example.conceptual.garch",
+        "title": "GARCH and hybrid neural networks for volatility: conceptual framing",
+        "year": 2021,
+        "utility": 0.5,
+        "alignment_score": 0.41,
+        "key_findings": [
+          "GARCH-family models define the classical econometric benchmark for volatility."
+        ],
+        "citation_context": "Use in Background when positioning ML against econometric baselines.",
+        "suggested_section": "Background"
+      },
+      {
+        "level": "seminal",
+        "doi": "10.1016/0304-4076(86)90063-1",
+        "title": "Generalized Autoregressive Conditional Heteroskedasticity",
+        "year": 1986,
+        "utility": 0.8,
+        "alignment_score": 0.55,
+        "key_findings": [
+          "Foundational GARCH specification for time-varying volatility."
+        ],
+        "citation_context": "Cite only in theoretical framework as origin of conditional heteroskedasticity models.",
+        "suggested_section": "Background / Theoretical framework (Seminal Literature)"
+      }
+    ],
+    "warnings": [],
+    "source_path": "/app/data/literature/example_review_for_analysis.json"
+  },
+  "literature_benchmarking": [
+    {
+      "model_id": "ols",
+      "params": {},
+      "metric": "rmse",
+      "observed": 0.006076195236390383,
+      "literature_reference": 0.01,
+      "delta_observed_minus_ref": -0.003923804763609617,
+      "higher_is_better": false,
+      "verdict": "better",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+    },
+    {
+      "model_id": "ols",
+      "params": {},
+      "metric": "r2",
+      "observed": 0.9849225892869616,
+      "literature_reference": 0.85,
+      "delta_observed_minus_ref": 0.13492258928696166,
+      "higher_is_better": true,
+      "verdict": "better",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 0.01
+      },
+      "metric": "rmse",
+      "observed": 0.007364054483514983,
+      "literature_reference": 0.01,
+      "delta_observed_minus_ref": -0.002635945516485017,
+      "higher_is_better": false,
+      "verdict": "better",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 0.01
+      },
+      "metric": "r2",
+      "observed": 0.9778538971998276,
+      "literature_reference": 0.85,
+      "delta_observed_minus_ref": 0.12785389719982765,
+      "higher_is_better": true,
+      "verdict": "better",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 0.1
+      },
+      "metric": "rmse",
+      "observed": 0.009368025639029819,
+      "literature_reference": 0.01,
+      "delta_observed_minus_ref": -0.0006319743609701813,
+      "higher_is_better": false,
+      "verdict": "better",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 0.1
+      },
+      "metric": "r2",
+      "observed": 0.9641607042680693,
+      "literature_reference": 0.85,
+      "delta_observed_minus_ref": 0.11416070426806935,
+      "higher_is_better": true,
+      "verdict": "better",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 1.0
+      },
+      "metric": "rmse",
+      "observed": 0.009832468337726233,
+      "literature_reference": 0.01,
+      "delta_observed_minus_ref": -0.00016753166227376735,
+      "higher_is_better": false,
+      "verdict": "better",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 1.0
+      },
+      "metric": "r2",
+      "observed": 0.9605189732307416,
+      "literature_reference": 0.85,
+      "delta_observed_minus_ref": 0.11051897323074167,
+      "higher_is_better": true,
+      "verdict": "better",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 10.0
+      },
+      "metric": "rmse",
+      "observed": 0.010424207841664956,
+      "literature_reference": 0.01,
+      "delta_observed_minus_ref": 0.00042420784166495584,
+      "higher_is_better": false,
+      "verdict": "worse",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative RMSE reported for lag-vol baselines in curated review."
+    },
+    {
+      "model_id": "ridge",
+      "params": {
+        "alpha": 10.0
+      },
+      "metric": "r2",
+      "observed": 0.9556238675255805,
+      "literature_reference": 0.85,
+      "delta_observed_minus_ref": 0.1056238675255805,
+      "higher_is_better": true,
+      "verdict": "better",
+      "source": "synthetic-lit-baseline / example review",
+      "note": "Illustrative out-of-sample R2 for linear volatility proxies."
+    }
+  ],
+  "analytical_discussion": "## Analytical Discussion (for Academic Writer)\n\nStudy focus: **Realized volatility regression baseline** (`regression`). Best local model: `ols` with `rmse` = 0.006076195236390383.\n\n### Relation to the state of the art\nLiterature snapshot: core=1, conceptual=1, seminal=1 (title='Volatility forecasting with machine learning in financial markets').\n\nKey evidence cards to cite:\n- [core] Machine learning forecasts of realized volatility: an illustrative core paper (2023; DOI `10.0000/example.core.vol`). Use in: Results / Discussion. Context: Cite in Results/Discussion as empirical baseline for realized-volatility forecasting.\n- [conceptual] GARCH and hybrid neural networks for volatility: conceptual framing (2021; DOI `10.0000/example.conceptual.garch`). Use in: Background. Context: Use in Background when positioning ML against econometric baselines.\n- [seminal] Generalized Autoregressive Conditional Heteroskedasticity (1986; DOI `10.1016/0304-4076(86)90063-1`). Use in: Background / Theoretical framework (Seminal Literature). Context: Cite only in theoretical framework as origin of conditional heteroskedasticity models.\n\n### Benchmarking vs literature thresholds\n- Metric `rmse`: observed=0.0060762 vs lit=0.01 (Δ=-0.0039238) → **better** [synthetic-lit-baseline / example review]. Illustrative RMSE reported for lag-vol baselines in curated review.\n- Metric `r2`: observed=0.984923 vs lit=0.85 (Δ=0.134923) → **better** [synthetic-lit-baseline / example review]. Illustrative out-of-sample R2 for linear volatility proxies.\n\n### Writer guidance\n- Report the model_comparison table in Results; do not invent extra metrics.\n- In Discussion, explicitly state whether results are better/worse/equal relative to each literature benchmark above.\n- Use seminal cards only for theoretical origins; use core/conceptual for empirical contrast.\n- Acknowledge dataset scope, sample size, and that no web search was used at the analysis stage.\n",
+  "warnings": [
+    "Literature review loaded from /app/data/literature/example_review_for_analysis.json."
+  ],
+  "persisted_at": "2026-07-27T17:26:19.554665+00:00",
+  "run_id": "20260727T172619Z_realized-volatility-regression-baseline"
+}

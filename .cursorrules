@@ -18,7 +18,7 @@ El sistema debe estructurarse jerárquica o secuencialmente con los siguientes r
 Cualquier código, prompt o estructura generada por los agentes debe garantizar:
 - **Rigidez Metodológica:** Justificación clara de variables, pruebas de robustez en los análisis estadísticos y ausencia de sesgos de confirmación.
 - **Estructura IMRaD:** Introducción (con brecha de investigación clara), Metodología (replicable), Resultados (respaldados por código y métricas precisas) y Discusión/Conclusiones.
-- **Formato de Salida:** Los artículos deben entregarse limpios, estructurados en Markdown o LaTeX listos para compilación, con referencias cruzadas y citas formateadas correctamente.
+- **Formato de Salida:** Los artículos deben entregarse limpios, estructurados en Markdown listos para compilación, con referencias cruzadas y citas formateadas correctamente.
 
 ## 4. Guías de Código para Cursor
 - Escribe código Python modular, tipado (`type hints`), limpio y documentado con docstrings estilo Google.

@@ -1,0 +1,11 @@
+{
+  "title": "Auditoría Q1 — manuscrito forense PYMES CO",
+  "writing_brief_path": "briefs/example_paper.json",
+  "literature_review_path": "literature/example_review_forensic.json",
+  "analysis_report_path": "analysis/example_forensic_report.json",
+  "language": "es",
+  "quality_threshold": 8.5,
+  "max_revision_rounds": 2,
+  "include_latex": true,
+  "use_llm": false
+}
