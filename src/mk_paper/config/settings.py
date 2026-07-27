@@ -58,14 +58,14 @@ class Settings(BaseSettings):
             "funciona con rate limits más bajos. Header: x-api-key."
         ),
     )
-    http_timeout_seconds: float = 30.0
-    http_max_retries: int = 3
+    http_timeout_seconds: float = 45.0
+    http_max_retries: int = 4
 
     # PDF full-text extraction (OA papers)
     pdf_fulltext_enabled: bool = True
     pdf_max_pages: int = 12
     pdf_max_chars: int = 14000
-    pdf_download_concurrency: int = 3
+    pdf_download_concurrency: int = 2
 
     # Hybrid alignment (TF-IDF + cosine)
     alignment_high_threshold: float = 0.35

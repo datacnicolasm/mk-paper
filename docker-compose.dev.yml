@@ -2,6 +2,10 @@ services:
   app:
     build:
       target: base
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+      - 8.8.4.4
     volumes:
       - ./src:/app/src
       - ./data:/app/data
