@@ -1,18 +1,14 @@
 [project]
 name = "mk-paper"
 version = "0.1.0"
-description = "Sistema multi-agente científico con CrewAI"
+description = "Motor experto de revisión de literatura y redacción académica (CrewAI)"
 requires-python = ">=3.12"
 dependencies = [
     "crewai",
     "litellm",
     "pandas",
     "numpy",
-    "statsmodels",
     "scikit-learn",
-    "scipy",
-    "xgboost",
-    "openpyxl",
     "boto3",
     "psycopg[binary]",
     "python-dotenv",

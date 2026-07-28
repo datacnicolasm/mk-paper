@@ -1,4 +1,4 @@
-"""Factory del Agente Redactor Científico (Scientific Writer)."""
+"""Factory del Agente Redactor Experto (Expert Academic Writer)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from crewai import Agent, LLM
 from mk_paper.config.llm import get_llm
 from mk_paper.tools.writer_tools import (
     build_citation_catalog_tool,
-    draft_imrad_paper_tool,
+    draft_literature_paper_tool,
     export_paper_formats_tool,
     load_writing_inputs_tool,
     validate_apa_citations_tool,
@@ -15,39 +15,31 @@ from mk_paper.tools.writer_tools import (
 
 
 def create_scientific_writer(llm: LLM | str | None = None) -> Agent:
-    """Crea el Scientific Writer (IMRaD + APA 7 vía cite_keys Pandoc).
-
-    Args:
-        llm: Instancia ``crewai.LLM``, string LiteLLM, o None para Groq.
-
-    Returns:
-        Agente CrewAI con tools de carga, catálogo APA, draft, validación y export.
-    """
+    """Crea el Expert Academic Writer con políticas editoriales Q1-Q2."""
     model = llm if llm is not None else get_llm()
 
     return Agent(
-        role="Scientific Writer",
+        role="Expert Academic Writer",
         goal=(
-            "Fusionar el JSON del Literature Reviewer y el AnalysisReport en un "
-            "artículo IMRaD Q1-Q2. Citar SOLO con cite_keys Pandoc [@key]; el "
-            "sistema expande a APA 7 y genera Referencias. No inventar fuentes "
-            "ni reescribir tablas numéricas."
+            "Redactar Introducción y Revisión de Literatura / Marco Teórico en "
+            "español académico estricto, con narrativa de lo general a lo "
+            "específico, cierre de la Intro con la pregunta de investigación, "
+            "citas exclusivamente [@cite_key] y Referencias APA 7 deterministas."
         ),
         backstory=(
-            "Eres editor académico Q1-Q2. Tono objetivo y mesurado; sin marketing. "
-            "Protocolo de citas: obligatoriamente [@cite_key] o "
-            "[@key1; @key2] — nunca APA autor-año a mano. "
-            "Introducción/marco teórico ≈ seminal+conceptual; Discusión ≈ core "
-            "para benchmarking empírico. En Resultados insertas placeholders de "
-            "tablas literales del skeleton; no redondeas ni retipeas métricas. "
-            "Workflow: Load Writing Inputs → Build Citation Catalog → "
-            "Draft IMRAD Paper → Validate APA Citations (solo Pandoc keys) → "
-            "Export Paper Formats."
+            "Eres editor académico jefe especializado en marcos teóricos. El texto "
+            "final debe leerse como un artículo científico profesional, no como "
+            "salida de software. Reglas inflexibles: idioma 100% español, prosa "
+            "continua sin viñetas, cero JSON o metadatos internos, y citas solo "
+            "con etiquetas Pandoc [@cite_key]. La Introducción ofrece panorama "
+            "sin profundizar en exceso y termina con la pregunta de investigación; "
+            "la Revisión de Literatura profundiza de lo general a lo específico "
+            "usando literatura seminal, conceptual y core."
         ),
         tools=[
             load_writing_inputs_tool,
             build_citation_catalog_tool,
-            draft_imrad_paper_tool,
+            draft_literature_paper_tool,
             validate_apa_citations_tool,
             export_paper_formats_tool,
         ],

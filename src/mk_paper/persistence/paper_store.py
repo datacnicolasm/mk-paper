@@ -1,4 +1,4 @@
-"""Persistencia local de borradores IMRaD del Scientific Writer."""
+"""Persistencia local de borradores del Expert Academic Writer."""
 
 from __future__ import annotations
 
@@ -48,7 +48,7 @@ def save_paper_draft(
     *,
     output_dir: str | Path,
 ) -> PaperArtifacts:
-    """Persiste draft_imrad.md/.tex, paper_draft.json y citation_catalog.json."""
+    """Persiste draft markdown/.tex, paper_draft.json y citation_catalog.json."""
     if isinstance(draft, dict):
         paper = PaperDraft.model_validate(draft)
     else:
@@ -72,11 +72,12 @@ def save_paper_draft(
     latest_md = root / "draft_imrad.md"
     latest_json = root / "latest_paper.json"
 
+    markdown = paper.markdown or ""
     payload = paper.to_dict()
     payload["persisted_at"] = datetime.now(timezone.utc).isoformat()
     payload["run_id"] = run_dir.name
 
-    draft_md.write_text(paper.markdown or "", encoding="utf-8")
+    draft_md.write_text(markdown, encoding="utf-8")
     draft_json.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
     )
@@ -84,7 +85,7 @@ def save_paper_draft(
         json.dumps(cat.model_dump(mode="json"), ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    latest_md.write_text(paper.markdown or "", encoding="utf-8")
+    latest_md.write_text(markdown, encoding="utf-8")
     latest_json.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
     )

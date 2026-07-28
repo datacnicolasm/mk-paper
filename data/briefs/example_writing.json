@@ -1,0 +1,15 @@
+{
+  "title": "Marco teórico — auditoría forense e insolvencia en PYMES",
+  "literature_review_path": "literature/example_review_forensic.json",
+  "authors": ["Equipo mk-paper"],
+  "research_questions": [
+    "¿Qué señales contables forenses predicen manipulación e insolvencia en PYMES?"
+  ],
+  "objectives": [
+    "Construir un marco teórico de lo general a lo específico sobre distress forense"
+  ],
+  "domain": "forensic accounting / financial distress / emerging markets SMEs",
+  "language": "es",
+  "include_latex": false,
+  "cite_all_catalog": false
+}

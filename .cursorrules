@@ -1,26 +1,38 @@
-# Contexto del Proyecto: Sistema Multi-Agente Científico con CrewAI
-Estás asistiendo en el desarrollo de un framework en Python utilizando **CrewAI** para orquestar agentes autónomos especializados en la investigación, procesamiento de datos, análisis cuantitativo y redacción de artículos científicos con calidad de indexación Q1-Q2.
+# Contexto del Proyecto: Motor Experto de Revisión de Literatura y Redacción Académica (Expert Lit-Review & Writer)
 
-## 1. Arquitectura Técnica y Stack
-- **Orquestación:** CrewAI (versión más reciente).
-- **Inferencia de Modelos:** Integración mediante LiteLLM. Uso exclusivo de APIs externas de pago para razonamiento crítico y validaciones, y modelos de código abierto rápidos/económicos (vía Groq, DeepSeek API, OpenRouter o Together AI) para tareas masivas.
-- **Procesamiento de Datos:** Scripts en Python puros ejecutados por los agentes (`pandas`, `numpy`, `statsmodels`, `scikit-learn`) para cálculos financieros, estadísticos y econométricos rigurosos.
-- **Almacenamiento:** Integración con AWS (S3/RDS) para persistencia de datasets, literatura recopilada y borradores del documento.
+Estás asistiendo en el desarrollo de un framework en Python optimizado para la búsqueda masiva, filtrado, clasificación y redacción automatizada de marcos teóricos y revisiones de literatura científica de alto nivel (Q1-Q2). 
 
-## 2. Estructura y Roles del Crew (Agentes)
-El sistema debe estructurarse jerárquica o secuencialmente con los siguientes roles clave:
-1. **Agente Investigador (Literature Reviewer):** Busca, filtra y extrae literatura científica relevante (papers recientes, cuartiles altos) usando herramientas de búsqueda y APIs académicas.
-2. **Agente Analista de Datos (Quantitative Analyst):** Escribe y ejecuta código Python para procesar datasets, aplicar modelos estadísticos/machine learning y generar matrices de resultados robustas.
-3. **Agente Redactor Científico (Academic Writer):** Estructura y redacta el artículo siguiendo estrictamente los estándares APA, asegurando rigor metodológico, claridad académica y tono formal.
-4. **Agente Revisor de Calidad (Q1-Q2 Quality Auditor):** Actúa como par evaluador (*peer reviewer*) utilizando modelos de alta gama para auditar la validez lógica, la consistencia de los datos frente a las conclusiones y el cumplimiento de los estándares de revistas de alto impacto.
+El sistema está diseñado exclusivamente para eliminar la fricción mecánica de la investigación documental (búsqueda de fuentes, rastreo de DOIs, estructuración de ideas y generación de bibliografía APA), permitiendo que el investigador se concentre en el análisis cuantitativo y empírico.
 
-## 3. Estándares Académicos Obligatorios (Q1-Q2)
-Cualquier código, prompt o estructura generada por los agentes debe garantizar:
-- **Rigidez Metodológica:** Justificación clara de variables, pruebas de robustez en los análisis estadísticos y ausencia de sesgos de confirmación.
-- **Estructura IMRaD:** Introducción (con brecha de investigación clara), Metodología (replicable), Resultados (respaldados por código y métricas precisas) y Discusión/Conclusiones.
-- **Formato de Salida:** Los artículos deben entregarse limpios, estructurados en Markdown listos para compilación, con referencias cruzadas y citas formateadas correctamente.
+## 1. Alcance y Arquitectura Actual
+- **Dominio Exclusivo:** Búsqueda sistemática de literatura, síntesis conceptual y redacción de introducciones y marcos teóricos/revisión de literatura. **Se elimina por completo cualquier código de ejecución de análisis de datos, modelos cuantitativos o scripts de Python sobre datasets.**
+- **Orquestación:** CrewAI enfocado en agentes de investigación bibliográfica y redacción académica de precisión.
+- **Inferencia de Modelos:** Integración mediante LiteLLM. Modelos económicos/rápidos para procesamiento masivo de abstracts y modelos avanzados de razonamiento para la síntesis de prosa académica y control de coherencia.
+
+## 2. Estructura y Roles del Crew (Agentes de Literatura)
+1. **Agente Investigador y Buscador de Referencias (Literature Reviewer & Searcher):** 
+   - Conectado a APIs académicas (Semantic Scholar, OpenAlex). 
+   - Capaz de rastrear, filtrar y recuperar hasta 100 referencias bibliográficas pertinentes a un tema de investigación.
+   - Clasifica la literatura rigurosamente en tres *buckets*: **Seminal** (fundamentos teóricos), **Core** (estado del arte empírico y benchmarking) y **Conceptual** (definición de constructos y variables).
+2. **Agente Redactor Experto (Expert Academic Writer):**
+   - Toma el catálogo clasificado y redacta la sección de **Introducción** y la **Revisión de Literatura / Marco Teórico**.
+   - Aplica estrictamente una narrativa **de lo general a lo específico**, construyendo un hilo conductor coherente que conecta lógicamente las ideas entre autores.
+   - Garantiza que la **Introducción** finalice de manera natural y precisa con la **pregunta de investigación** del estudio.
+
+## 3. Estándares Académicos y Estructura de Salida Obligatoria
+Cualquier texto generado por los agentes debe cumplir con las siguientes directrices formales:
+- **Estructura Fija del Documento:**
+  1. **Introducción:** Visión panorámica resumida del problema investigado, contexto de la población, modelos/metodologías de forma general (sin profundizar en exceso), cerrando obligatoriamente con la pregunta de investigación.
+  2. **Revisión de Literatura / Marco Teórico:** Análisis profundo de los fundamentos de los modelos y conceptos, estructurado de lo general a lo específico, utilizando la literatura seminal y core con prosa continua.
+  3. **Referencias:** Listado bibliográfico final ordenado alfabéticamente bajo **normas APA (7ma edición)** exactas, conteniendo únicamente las fuentes citadas en el texto.
+- **Sistema de Citas Estricto (Cero Alucinación):**
+  - El agente redactor DEBE utilizar obligatoriamente etiquetas de cita estilo Pandoc en el texto (ej. `[@cite_key]`).
+  - Una función determinista en Python se encarga de inyectar las referencias reales del catálogo, evitando por completo errores de formato o invención de autores y años.
+- **Prosa Académica Fluida:**
+  - Prohibición absoluta de viñetas (bullet points) estructurales para explicar objetivos, preguntas o marcos teóricos. Todo debe redactarse en prosa académica continua, formal, objetiva y de alto nivel.
+  - Prohibición de incluir metadatos de programación, códigos JSON crudos, explicaciones de la arquitectura de software o referencias técnicas internas en el texto final.
 
 ## 4. Guías de Código para Cursor
 - Escribe código Python modular, tipado (`type hints`), limpio y documentado con docstrings estilo Google.
-- Maneja adecuadamente las excepciones en las herramientas (*tools*) de CrewAI para evitar que un fallo en una API externa detenga todo el flujo del equipo.
-- Utiliza variables de entorno (`os.getenv`) para todas las credenciales (APIs, AWS). Nunca hardcodees secretos.
+- Maneja adecuadamente las excepciones en las herramientas (*tools*) de CrewAI (reintentos, fallos de APIs de Semantic Scholar u OpenAlex) para asegurar la robustez de la búsqueda bibliográfica.
+- Utiliza variables de entorno (`os.getenv`) para todas las credenciales de APIs académicas o LLMs. Nunca hardcodees secretos.

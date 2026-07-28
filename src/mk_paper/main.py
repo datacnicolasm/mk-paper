@@ -1,4 +1,4 @@
-"""Entrypoint principal del sistema multi-agente."""
+"""Entrypoint principal del motor Expert Lit-Review & Writer."""
 
 import logging
 
@@ -18,18 +18,18 @@ def main() -> None:
         settings.output_dir,
     )
 
-    logger.info("mk-paper iniciado")
+    logger.info("mk-paper iniciado (Expert Lit-Review & Writer)")
     logger.info("Modelo principal: %s", settings.litellm_model)
     logger.info("Workspace: %s", settings.workspace_dir)
     logger.info("Output: %s", settings.output_dir)
     logger.info(
         "Pipeline E2E: python -m mk_paper run-pipeline "
         "--research-brief data/briefs/example_research.json "
-        "--method-brief data/briefs/example_method.json "
-        "--dataset data/workspace/pymes_colombia.csv"
+        "--literature-review data/literature/example_review_forensic.json "
+        "--no-llm --no-latex"
     )
     logger.info(
-        "Componentes: python -m mk_paper.cli {literature|analysis|paper|audit}"
+        "Componentes: python -m mk_paper.cli {literature|paper|audit|run-pipeline}"
     )
 
 

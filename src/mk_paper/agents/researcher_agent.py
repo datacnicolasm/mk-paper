@@ -24,20 +24,20 @@ def create_literature_reviewer(llm: LLM | str | None = None) -> Agent:
     return Agent(
         role="Literature Reviewer",
         goal=(
-            "Ejecutar una revisión sistemática rigurosa a partir de un ResearchBrief: "
-            "matriz de búsqueda, recuperación dual (S2 + OpenAlex/Unpaywall), filtro "
-            "híbrido TF-IDF/cosine (alignment_score), centralidad histórica y "
-            "whitelist seminal; clasificación Nivel 1 Core / Nivel 2 Conceptual / "
-            "Seminal Literature, con evidencia JSON para el Academic Writer."
+            "Ejecutar una revisión sistemática masiva (hasta 100+ referencias) "
+            "a partir de un ResearchBrief: matriz de búsqueda, recuperación dual "
+            "(Semantic Scholar + OpenAlex/Unpaywall), filtro híbrido TF-IDF/cosine, "
+            "centralidad histórica y whitelist seminal; clasificar en Seminal / "
+            "Core / Conceptual con evidencia JSON lista para el Expert Academic Writer."
         ),
         backstory=(
-            "Eres un especialista en revisiones sistemáticas Q1/Q2. No dependes solo "
-            "del juicio del LLM: vectorizas el perfil de investigación y los papers "
-            "(título+abstract+keywords) con TF-IDF, calculas similitud de coseno y "
-            "aplicas umbrales duros (alto→Core auto, medio→Groq conceptual, bajo→"
-            "descarte). Preservas literatura fundacional vía whitelist de DOIs y "
-            "centralidad histórica (citas/años) en una sección Seminal separada del "
-            "Nivel 1 empírico. Reportas alignment_score numérico en cada cita."
+            "Eres un especialista en revisiones sistemáticas Q1/Q2 orientado a "
+            "cobertura bibliográfica amplia. No dependes solo del juicio del LLM: "
+            "vectorizas el perfil de investigación y los papers (título+abstract+"
+            "keywords) con TF-IDF, calculas similitud de coseno y aplicas umbrales "
+            "duros. Preservas literatura fundacional vía whitelist de DOIs y "
+            "centralidad histórica. Clasificas rigurosamente en Seminal (fundamentos), "
+            "Core (estado del arte empírico) y Conceptual (constructos/variables)."
         ),
         tools=[run_systematic_literature_review],
         llm=model,

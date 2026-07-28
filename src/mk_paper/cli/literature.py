@@ -47,7 +47,7 @@ def add_literature_parser(parser: argparse.ArgumentParser) -> None:
         "--limit",
         type=int,
         default=None,
-        help="Override de max_results del brief (1-50).",
+        help="Override de max_results del brief (1-150).",
     )
     parser.add_argument(
         "--raw-search",
@@ -74,7 +74,7 @@ def _load_brief(args: argparse.Namespace) -> ResearchBrief:
         brief = ResearchBrief.model_validate(data)
         if args.limit is not None:
             brief = brief.model_copy(
-                update={"max_results": max(1, min(int(args.limit), 50))}
+                update={"max_results": max(1, min(int(args.limit), 150))}
             )
         return brief
 

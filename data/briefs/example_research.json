@@ -17,7 +17,7 @@
   "methodology": "Revisión sistemática con énfasis en estudios empíricos cuantitativos y robustez out-of-sample",
   "domain": "forensic accounting / financial distress / emerging markets SMEs",
   "years_back": 5,
-  "max_results": 8,
+  "max_results": 50,
   "seminal_dois": [
     "10.2308/accr.1999.74.4.445",
     "10.1086/209658"

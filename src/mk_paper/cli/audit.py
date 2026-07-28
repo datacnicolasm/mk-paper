@@ -1,4 +1,4 @@
-"""Subcomando CLI ``audit`` — Quality Auditor Q1-Q2."""
+"""Subcomando CLI ``audit`` — Quality Auditor lit-writer."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ def add_audit_parser(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--draft",
         default=None,
-        help="Markdown IMRaD a auditar (override paper_draft_path).",
+        help="Markdown a auditar (override paper_draft_path).",
     )
     parser.add_argument(
         "--writing-brief",
@@ -37,11 +37,6 @@ def add_audit_parser(parser: argparse.ArgumentParser) -> None:
         "--literature",
         default=None,
         help="Override literature_review_path.",
-    )
-    parser.add_argument(
-        "--analysis",
-        default=None,
-        help="Override analysis_report_path.",
     )
     parser.add_argument(
         "--threshold",
@@ -77,14 +72,13 @@ def _load_brief(args: argparse.Namespace) -> AuditBrief:
         raw = json.loads(Path(args.brief).read_text(encoding="utf-8"))
     else:
         raw = {"title": "Q1-Q2 quality audit"}
+    raw.pop("analysis_report_path", None)
     if args.draft:
         raw["paper_draft_path"] = args.draft
     if args.writing_brief:
         raw["writing_brief_path"] = args.writing_brief
     if args.literature:
         raw["literature_review_path"] = args.literature
-    if args.analysis:
-        raw["analysis_report_path"] = args.analysis
     if args.threshold is not None:
         raw["quality_threshold"] = args.threshold
     if args.max_rounds is not None:

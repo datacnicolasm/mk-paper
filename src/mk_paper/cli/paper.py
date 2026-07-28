@@ -1,4 +1,4 @@
-"""Subcomando CLI ``paper`` — Scientific Writer (IMRaD + APA 7)."""
+"""Subcomando CLI ``paper`` — Expert Academic Writer."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from mk_paper.config.settings import get_settings
 from mk_paper.crew.writer_crew import parse_crew_paper_output, run_writer_crew
 from mk_paper.models.writing_brief import WritingBrief
 from mk_paper.persistence.paper_store import save_paper_draft
-from mk_paper.tools.writer_tools import draft_imrad_paper
+from mk_paper.tools.writer_tools import draft_literature_paper
 
 logger = logging.getLogger(__name__)
 
@@ -21,17 +21,12 @@ def add_paper_parser(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--brief",
         default=None,
-        help="Ruta a WritingBrief JSON (alternativa a --literature/--analysis).",
+        help="Ruta a WritingBrief JSON (alternativa a --literature).",
     )
     parser.add_argument(
         "--literature",
         default=None,
         help="Ruta a review.json del Literature Reviewer.",
-    )
-    parser.add_argument(
-        "--analysis",
-        default=None,
-        help="Ruta a AnalysisReport JSON (p.ej. output/analysis/latest_report.json).",
     )
     parser.add_argument(
         "--title",
@@ -52,7 +47,7 @@ def add_paper_parser(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
         "--no-llm",
         action="store_true",
-        help="Borrador determinista sin llamar al LLM (skeleton + APA).",
+        help="Borrador determinista sin llamar al LLM.",
     )
     parser.add_argument(
         "--no-latex",
@@ -66,25 +61,21 @@ def _load_brief(args: argparse.Namespace) -> WritingBrief:
         raw = json.loads(Path(args.brief).read_text(encoding="utf-8"))
         if args.literature:
             raw["literature_review_path"] = args.literature
-        if args.analysis:
-            raw["analysis_report_path"] = args.analysis
         if args.title:
             raw["title"] = args.title
         if args.language:
             raw["language"] = args.language
         if args.no_latex:
             raw["include_latex"] = False
+        raw.pop("analysis_report_path", None)
         return WritingBrief.model_validate(raw)
 
-    if not args.literature or not args.analysis:
-        raise ValueError(
-            "Provide --brief or both --literature and --analysis."
-        )
-    title = args.title or "Untitled scientific manuscript"
+    if not args.literature:
+        raise ValueError("Provide --brief or --literature.")
+    title = args.title or "Untitled literature review manuscript"
     return WritingBrief(
         title=title,
         literature_review_path=args.literature,
-        analysis_report_path=args.analysis,
         language=args.language or "es",
         include_latex=not bool(args.no_latex),
     )
@@ -115,17 +106,15 @@ def run_paper_cli(args: argparse.Namespace) -> int:
         draft = parse_crew_paper_output(raw)
         if draft is None:
             logger.warning("Crew output not parseable; falling back to direct engine")
-            draft, catalog = draft_imrad_paper(
+            draft, catalog = draft_literature_paper(
                 brief, settings=settings, use_llm=not bool(args.no_llm)
             )
     else:
-        draft, catalog = draft_imrad_paper(
+        draft, catalog = draft_literature_paper(
             brief, settings=settings, use_llm=not bool(args.no_llm)
         )
 
-    artifacts = save_paper_draft(
-        draft, catalog, output_dir=settings.output_dir
-    )
+    artifacts = save_paper_draft(draft, catalog, output_dir=settings.output_dir)
     paths = [str(artifacts.draft_md), str(artifacts.draft_json)]
     if artifacts.draft_tex:
         paths.append(str(artifacts.draft_tex))

@@ -1,6 +1,5 @@
 """Capa de persistencia local de artefactos del proyecto."""
 
-from mk_paper.persistence.analysis_store import AnalysisArtifacts, save_analysis_report
 from mk_paper.persistence.audit_store import AuditArtifacts, save_audit_verdict
 from mk_paper.persistence.literature_store import (
     LiteratureArtifacts,
@@ -16,8 +15,6 @@ __all__ = [
     "ReviewArtifacts",
     "save_literature_results",
     "save_literature_review",
-    "AnalysisArtifacts",
-    "save_analysis_report",
     "PaperArtifacts",
     "save_paper_draft",
     "AuditArtifacts",

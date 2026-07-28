@@ -7,18 +7,13 @@ from mk_paper.models.audit_brief import (
     AuditVerdict,
     DimensionScores,
 )
-from mk_paper.models.method_brief import (
-    AnalysisReport,
-    LiteratureBenchmark,
-    MethodBrief,
-)
+from mk_paper.models.pipeline import PipelineConfig, PipelineResult, PipelineStepResult
 from mk_paper.models.research_brief import (
     ClassifiedPaper,
     LiteratureReviewOutput,
     ResearchBrief,
     SearchMatrix,
 )
-from mk_paper.models.pipeline import PipelineConfig, PipelineResult, PipelineStepResult
 from mk_paper.models.writing_brief import (
     CitationCatalog,
     CitationEntry,
@@ -32,9 +27,6 @@ __all__ = [
     "SearchMatrix",
     "ClassifiedPaper",
     "LiteratureReviewOutput",
-    "MethodBrief",
-    "AnalysisReport",
-    "LiteratureBenchmark",
     "WritingBrief",
     "CitationEntry",
     "CitationCatalog",

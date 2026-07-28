@@ -1,4 +1,4 @@
-"""Subcomando CLI ``run-pipeline`` — orquestación end-to-end."""
+"""Subcomando CLI ``run-pipeline`` — Lit-Review → Writer → Auditor."""
 
 from __future__ import annotations
 
@@ -19,16 +19,6 @@ def add_pipeline_parser(parser: argparse.ArgumentParser) -> None:
         "--research-brief",
         required=True,
         help="Ruta al ResearchBrief JSON (Literature Reviewer).",
-    )
-    parser.add_argument(
-        "--method-brief",
-        required=True,
-        help="Ruta al MethodBrief JSON (Quantitative Analyst).",
-    )
-    parser.add_argument(
-        "--dataset",
-        default=None,
-        help="Override del dataset local CSV/XLSX del MethodBrief.",
     )
     parser.add_argument(
         "--literature-review",
@@ -70,7 +60,7 @@ def add_pipeline_parser(parser: argparse.ArgumentParser) -> None:
         "--literature-max-results",
         type=int,
         default=None,
-        help="Override de max_results del ResearchBrief.",
+        help="Override de max_results del ResearchBrief (1-150).",
     )
     parser.add_argument(
         "--via-crew",
@@ -83,9 +73,9 @@ def add_pipeline_parser(parser: argparse.ArgumentParser) -> None:
         help="Writer/Auditor deterministas (sin Groq). La literatura aún puede usar APIs.",
     )
     parser.add_argument(
-        "--enrich-analysis-discussion",
+        "--skip-auditor",
         action="store_true",
-        help="Activa enriquecimiento LLM de la discusión analítica.",
+        help="Omite el Quality Auditor (solo Literature → Writer).",
     )
     parser.add_argument(
         "--no-latex",
@@ -110,8 +100,6 @@ def run_pipeline_cli(args: argparse.Namespace) -> int:
 
     config = PipelineConfig(
         research_brief_path=args.research_brief,
-        method_brief_path=args.method_brief,
-        dataset_path=args.dataset,
         literature_review_path=args.literature_review,
         skip_literature=skip_lit,
         title=args.title,
@@ -120,16 +108,14 @@ def run_pipeline_cli(args: argparse.Namespace) -> int:
         max_audit_rounds=int(args.max_audit_rounds),
         use_llm=not bool(args.no_llm),
         via_crew=bool(args.via_crew),
-        enrich_analysis_discussion=bool(args.enrich_analysis_discussion),
         include_latex=not bool(args.no_latex),
         literature_max_results=args.literature_max_results,
+        skip_auditor=bool(args.skip_auditor),
     )
 
     logger.info(
-        "Starting pipeline research=%s method=%s dataset=%s skip_lit=%s",
+        "Starting pipeline research=%s skip_lit=%s",
         config.research_brief_path,
-        config.method_brief_path,
-        config.dataset_path,
         config.skip_literature,
     )
     result = run_pipeline(config, settings=settings)
@@ -158,7 +144,7 @@ def run_pipeline_cli(args: argparse.Namespace) -> int:
             print(f"  - {w}")
     print("=" * 72)
 
-    if result.status == "ok" and result.decision == "accept":
+    if result.status == "ok" and result.decision in ("accept", "pending"):
         return 0
     if result.status == "partial" or result.decision == "revise":
         return 3

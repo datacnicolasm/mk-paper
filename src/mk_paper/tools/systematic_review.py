@@ -159,7 +159,7 @@ async def run_dual_search(
     sources_used: set[str] = set()
     all_rows: list[dict[str, Any]] = []
     queries = matrix.queries[:_MAX_QUERIES] or [brief.title]
-    per_query = max(5, min(brief.max_results, 15))
+    per_query = max(8, min(max(brief.max_results // 3, 10), 40))
 
     timeout = httpx.Timeout(settings.http_timeout_seconds)
     async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
@@ -653,7 +653,7 @@ async def run_systematic_review(
 ) -> LiteratureReviewOutput:
     """Ejecuta el embudo completo y retorna output Writer-ready."""
     if limit is not None:
-        brief = brief.model_copy(update={"max_results": max(1, min(int(limit), 50))})
+        brief = brief.model_copy(update={"max_results": max(1, min(int(limit), 150))})
 
     warnings: list[str] = []
     logger.info("Building search matrix with Groq for brief=%r", brief.title)

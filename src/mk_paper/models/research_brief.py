@@ -20,7 +20,7 @@ class ResearchBrief(BaseModel):
     methodology: str = ""
     domain: str = ""
     years_back: int = 3
-    max_results: int = 20
+    max_results: int = 50
     seminal_dois: list[str] = Field(
         default_factory=list,
         description=(
@@ -30,7 +30,7 @@ class ResearchBrief(BaseModel):
     )
 
     @classmethod
-    def from_loose_query(cls, query: str, *, max_results: int = 20) -> ResearchBrief:
+    def from_loose_query(cls, query: str, *, max_results: int = 50) -> ResearchBrief:
         """Envoltorio mínimo cuando solo se dispone de una query suelta."""
         q = (query or "").strip()
         return cls(

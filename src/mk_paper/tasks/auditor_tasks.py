@@ -1,4 +1,4 @@
-"""Tasks del Quality Auditor Q1-Q2."""
+"""Tasks del Quality Auditor (lit-writer)."""
 
 from __future__ import annotations
 
@@ -8,35 +8,28 @@ from mk_paper.models.audit_brief import AuditBrief
 
 
 def create_audit_task(agent: Agent, brief: AuditBrief) -> Task:
-    """Crea la task de auditoría con umbral y feedback loop.
-
-    Args:
-        agent: Quality Auditor configurado.
-        brief: AuditBrief con paths y quality_threshold.
-
-    Returns:
-        Task CrewAI que exige AuditVerdict JSON.
-    """
+    """Crea la task de auditoría con umbral y feedback loop."""
     brief_json = brief.model_dump_json(indent=2)
     return Task(
         description=(
-            "Audita el manuscrito IMRaD con estándar Q1-Q2 y, si el puntaje "
-            f"es < {brief.quality_threshold}/10, devuelve el borrador al "
-            "Scientific Writer con AuditFeedback estructurado hasta alcanzar "
-            "el umbral o agotar rondas.\n\n"
+            "Audita el manuscrito de revisión de literatura con estándar Q1-Q2 y, "
+            f"si el puntaje es < {brief.quality_threshold}/10, devuelve el "
+            "borrador al Writer con AuditFeedback hasta alcanzar el umbral o "
+            "agotar rondas.\n\n"
             "INPUT — AuditBrief (pásalo íntegro como audit_brief_json):\n"
             f"{brief_json}\n\n"
             "Workflow:\n"
-            "1) Opcional: `Run Structural Quality Checks` sobre el markdown.\n"
-            "2) `Evaluate Manuscript Quality` con el AuditBrief.\n"
-            "3) Preferente: `Run Audit With Writer Feedback Loop` (orquesta "
-            "revisión automática del Writer).\n"
+            "1) Opcional: `Run Structural Quality Checks`.\n"
+            "2) `Evaluate Manuscript Quality`.\n"
+            "3) Preferente: `Run Audit With Writer Feedback Loop`.\n"
             "4) Si accept: `Polish Final Manuscript`.\n\n"
             "Criterios duros:\n"
-            "- Cero viñetas estructurales (objetivos, RQ, método en prosa).\n"
-            "- Tono analítico; sin marketing.\n"
-            "- Citas [@cite_key]; sin afirmaciones empíricas huérfanas.\n"
-            "- Coherencia problema ↔ modelo cuantitativo ↔ conclusiones.\n"
+            "- Secciones: Introducción, Revisión de Literatura/Marco Teórico, Referencias.\n"
+            "- Intro cierra con pregunta de investigación.\n"
+            "- Cero viñetas estructurales.\n"
+            "- Cero mezcla de idiomas (español).\n"
+            "- Cero JSON/código/metadatos internos.\n"
+            "- Citas [@cite_key] válidas.\n"
             "- Output: AuditVerdict JSON completo.\n"
         ),
         expected_output=(

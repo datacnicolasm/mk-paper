@@ -26,22 +26,13 @@ data/*
 data/briefs/*
 !data/briefs/.gitkeep
 !data/briefs/*.json
-!data/datasets/
-data/datasets/*
-!data/datasets/.gitkeep
-!data/datasets/**
 !data/literature/
 data/literature/*
 !data/literature/.gitkeep
 !data/literature/*.json
-!data/analysis/
-data/analysis/*
-!data/analysis/.gitkeep
-!data/analysis/*.json
 !data/workspace/
 data/workspace/*
 !data/workspace/.gitkeep
-!data/workspace/**
 
 # Workspace / generated outputs (never commit runs)
 workspace/*

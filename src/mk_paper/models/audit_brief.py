@@ -1,4 +1,4 @@
-"""Modelos del Agente Auditor de Calidad Q1-Q2."""
+"""Modelos del Agente Auditor de Calidad (lit-review & writer)."""
 
 from __future__ import annotations
 
@@ -8,15 +8,12 @@ from pydantic import BaseModel, Field
 
 
 class AuditBrief(BaseModel):
-    """Entrada del Quality Auditor: paths al draft + evidencia fuente."""
+    """Entrada del Quality Auditor: paths al draft + evidencia bibliográfica."""
 
     title: str = "Q1-Q2 quality audit"
     paper_draft_path: str | None = None
-    """Markdown IMRaD a auditar (p.ej. output/paper/draft_imrad.md)."""
     writing_brief_path: str | None = None
-    """Si se omite el draft, se puede regenerar/revisar desde este WritingBrief."""
     literature_review_path: str | None = None
-    analysis_report_path: str | None = None
     language: Literal["es", "en"] = "es"
     quality_threshold: float = Field(default=8.5, ge=0.0, le=10.0)
     max_revision_rounds: int = Field(default=2, ge=0, le=5)
@@ -33,8 +30,8 @@ class AuditFinding(BaseModel):
         "citations",
         "coherence",
         "orphan_claims",
-        "methodology",
-        "results",
+        "research_question",
+        "sections",
         "other",
     ]
     severity: Literal["critical", "major", "minor"] = "major"
@@ -50,11 +47,11 @@ class DimensionScores(BaseModel):
     tone: float = 10.0
     citations: float = 10.0
     coherence: float = 10.0
-    empirical_support: float = 10.0
+    research_question: float = 10.0
 
 
 class AuditFeedback(BaseModel):
-    """Reporte de corrección estructurado para el Scientific Writer."""
+    """Reporte de corrección estructurado para el Expert Academic Writer."""
 
     overall_score: float = 0.0
     threshold: float = 8.5
@@ -62,7 +59,6 @@ class AuditFeedback(BaseModel):
     dimension_scores: DimensionScores = Field(default_factory=DimensionScores)
     findings: list[AuditFinding] = Field(default_factory=list)
     revision_instructions: str = ""
-    """Instrucciones accionables que el Writer debe aplicar en la siguiente pasada."""
     summary: str = ""
 
 
@@ -80,7 +76,6 @@ class AuditVerdict(BaseModel):
     latex: str | None = None
     paper_draft_path: str = ""
     literature_path: str = ""
-    analysis_path: str = ""
     warnings: list[str] = Field(default_factory=list)
     status: Literal["ok", "error", "partial"] = "ok"
 

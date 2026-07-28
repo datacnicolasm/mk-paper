@@ -1,4 +1,4 @@
-"""Contratos del orquestador end-to-end mk-paper."""
+"""Contratos del orquestador Lit-Review → Writer → Auditor."""
 
 from __future__ import annotations
 
@@ -8,12 +8,9 @@ from pydantic import BaseModel, Field
 
 
 class PipelineConfig(BaseModel):
-    """Configuración de una ejecución punta a punta."""
+    """Configuración de una ejecución punta a punta (sin análisis cuantitativo)."""
 
     research_brief_path: str
-    method_brief_path: str
-    dataset_path: str | None = None
-    """Override del dataset_path del MethodBrief (CSV/XLSX local)."""
     literature_review_path: str | None = None
     """Si se provee, salta la búsqueda y usa este review.json."""
     skip_literature: bool = False
@@ -24,9 +21,9 @@ class PipelineConfig(BaseModel):
     max_audit_rounds: int = Field(default=2, ge=0, le=5)
     use_llm: bool = True
     via_crew: bool = False
-    enrich_analysis_discussion: bool = False
     include_latex: bool = True
     literature_max_results: int | None = None
+    skip_auditor: bool = False
 
 
 class PipelineStepResult(BaseModel):

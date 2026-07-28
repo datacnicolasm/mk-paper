@@ -1,11 +1,10 @@
-"""CLI de mk-paper: componentes aislados + pipeline end-to-end."""
+"""CLI de mk-paper: literature, paper, audit y run-pipeline E2E."""
 
 from __future__ import annotations
 
 import argparse
 import sys
 
-from mk_paper.cli.analysis import add_analysis_parser, run_analysis_cli
 from mk_paper.cli.audit import add_audit_parser, run_audit_cli
 from mk_paper.cli.literature import add_literature_parser, run_literature_search_cli
 from mk_paper.cli.paper import add_paper_parser, run_paper_cli
@@ -17,7 +16,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="mk-paper",
         description=(
-            "CLI de mk-paper: literature, analysis, paper, audit y run-pipeline E2E."
+            "CLI de mk-paper: literature, paper, audit y run-pipeline "
+            "(Expert Lit-Review & Writer)."
         ),
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -25,27 +25,17 @@ def build_parser() -> argparse.ArgumentParser:
     literature_parser = subparsers.add_parser(
         "literature",
         help=(
-            "Revisión sistemática (ResearchBrief + Groq) o búsqueda cruda; "
+            "Revisión sistemática masiva (ResearchBrief + S2/OpenAlex); "
             "persiste en output/literature/"
         ),
     )
     add_literature_parser(literature_parser)
     literature_parser.set_defaults(handler=run_literature_search_cli)
 
-    analysis_parser = subparsers.add_parser(
-        "analysis",
-        help=(
-            "Análisis cuantitativo determinista (MethodBrief + CSV/XLSX local); "
-            "persiste en output/analysis/"
-        ),
-    )
-    add_analysis_parser(analysis_parser)
-    analysis_parser.set_defaults(handler=run_analysis_cli)
-
     paper_parser = subparsers.add_parser(
         "paper",
         help=(
-            "Redacción IMRaD + APA 7 (WritingBrief / literature+analysis); "
+            "Redacción Intro + Revisión de Literatura + APA 7; "
             "persiste en output/paper/"
         ),
     )
@@ -55,7 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
     audit_parser = subparsers.add_parser(
         "audit",
         help=(
-            "Auditoría Q1-Q2 del manuscrito IMRaD con feedback loop al Writer; "
+            "Auditoría de prosa/citas del manuscrito lit-writer; "
             "persiste en output/audit/"
         ),
     )
@@ -65,7 +55,7 @@ def build_parser() -> argparse.ArgumentParser:
     pipeline_parser = subparsers.add_parser(
         "run-pipeline",
         help=(
-            "Pipeline E2E Literature → Analysis → Writer → Auditor "
+            "Pipeline E2E Literature → Writer → Auditor "
             "(output/runs/{timestamp}_paper_run/)"
         ),
     )

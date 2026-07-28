@@ -1,8 +1,16 @@
 {
-  "title": "Auditoría forense financiera en PYMES colombianas (2017-2024): Random Forest, Beneish M-Score y Piotroski F-Score",
+  "title": "Auditoría forense financiera en PYMES colombianas (2017-2024): marco teórico y estado del arte",
   "literature_review_path": "literature/example_review_forensic.json",
-  "analysis_report_path": "analysis/example_forensic_report.json",
-  "authors": ["Equipo mk-paper", "Auditoría Forense Cuantitativa"],
+  "authors": ["Equipo mk-paper"],
+  "research_questions": [
+    "¿Qué señales contables forenses predicen manipulación e insolvencia en PYMES?",
+    "¿Cómo se comparan baselines de scores clásicos frente a clasificadores tipo Random Forest?"
+  ],
+  "objectives": [
+    "Sintetizar evidencia sobre scores forenses y ML para distress",
+    "Delimitar el vacío de conocimiento para baselines locales transparentes"
+  ],
+  "domain": "forensic accounting / financial distress / emerging markets SMEs",
   "language": "es",
   "include_latex": true,
   "cite_all_catalog": false

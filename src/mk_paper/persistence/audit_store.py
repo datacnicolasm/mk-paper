@@ -62,6 +62,7 @@ def save_audit_verdict(
     latest_verdict = root / "review_verdict.json"
     latest_md = root / "manuscript_final.md"
 
+    polished = v.polished_markdown or ""
     payload = v.to_dict()
     payload["persisted_at"] = datetime.now(timezone.utc).isoformat()
     payload["run_id"] = run_dir.name
@@ -72,8 +73,8 @@ def save_audit_verdict(
     latest_verdict.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    polished_md.write_text(v.polished_markdown or "", encoding="utf-8")
-    latest_md.write_text(v.polished_markdown or "", encoding="utf-8")
+    polished_md.write_text(polished, encoding="utf-8")
+    latest_md.write_text(polished, encoding="utf-8")
 
     polished_tex: Path | None = None
     latest_tex: Path | None = None

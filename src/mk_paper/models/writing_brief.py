@@ -1,4 +1,4 @@
-"""Modelos del Agente Redactor Científico (Scientific Writer)."""
+"""Modelos del Agente Redactor Experto (Expert Academic Writer)."""
 
 from __future__ import annotations
 
@@ -8,15 +8,20 @@ from pydantic import BaseModel, Field
 
 
 class WritingBrief(BaseModel):
-    """Brief de redacción: fusiona literatura local + AnalysisReport."""
+    """Brief de redacción: catálogo bibliográfico local + pregunta de investigación."""
 
     title: str
     literature_review_path: str
-    analysis_report_path: str
     authors: list[str] = Field(
         default_factory=list,
         description="Autores meta del manuscrito (no citas bibliográficas).",
     )
+    research_questions: list[str] = Field(
+        default_factory=list,
+        description="Preguntas de investigación; la Intro debe cerrar con ellas.",
+    )
+    objectives: list[str] = Field(default_factory=list)
+    domain: str = ""
     language: Literal["es", "en"] = "es"
     include_latex: bool = True
     cite_all_catalog: bool = False
@@ -63,7 +68,7 @@ class CitationValidation(BaseModel):
 
 
 class PaperDraft(BaseModel):
-    """Borrador IMRaD listo para persistir."""
+    """Borrador Intro + Revisión de Literatura + Referencias."""
 
     title: str
     markdown: str = ""
@@ -72,7 +77,6 @@ class PaperDraft(BaseModel):
     warnings: list[str] = Field(default_factory=list)
     validation: CitationValidation = Field(default_factory=CitationValidation)
     literature_path: str = ""
-    analysis_path: str = ""
     language: Literal["es", "en"] = "es"
     status: Literal["ok", "error", "partial"] = "ok"
 

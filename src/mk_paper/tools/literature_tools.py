@@ -302,7 +302,7 @@ async def _search_openalex(
     settings: Settings,
 ) -> list[dict[str, Any]]:
     """Busca works en OpenAlex como fuente primaria (fallback)."""
-    fetch_limit = min(max(limit * 3, limit), 50)
+    fetch_limit = min(max(limit * 3, limit), 150)
     params: dict[str, Any] = {
         "search": query,
         "per_page": fetch_limit,
@@ -772,7 +772,7 @@ async def _run_literature_search(query: str, limit: int) -> str:
     """Orquesta búsqueda (S2 → OpenAlex fallback), enrich Unpaywall y JSON."""
     settings = get_settings()
     warnings: list[str] = []
-    limit = max(1, min(int(limit), 50))
+    limit = max(1, min(int(limit), 150))
     query = (query or "").strip()
     if not query:
         return json.dumps(

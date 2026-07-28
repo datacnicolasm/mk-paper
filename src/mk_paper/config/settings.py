@@ -1,5 +1,8 @@
 """Configuración centralizada del proyecto."""
 
+from __future__ import annotations
+
+from pathlib import Path
 from typing import Annotated
 
 from pydantic import BeforeValidator, Field
@@ -14,6 +17,53 @@ def _empty_str_to_none(value: object) -> object:
 
 
 BlankOptionalStr = Annotated[str | None, BeforeValidator(_empty_str_to_none)]
+
+_DOCKER_PATH_PREFIX = "/app/"
+_LOCAL_PATH_MAP: dict[str, str] = {
+    "data_dir": "data",
+    "output_dir": "output",
+    "workspace_dir": "data/workspace",
+}
+
+
+def _find_project_root() -> Path | None:
+    """Localiza la raíz del repo (directorio con ``pyproject.toml``)."""
+    candidates: list[Path] = [Path.cwd().resolve()]
+    here = Path(__file__).resolve()
+    candidates.extend(here.parents)
+    seen: set[Path] = set()
+    for base in candidates:
+        if base in seen:
+            continue
+        seen.add(base)
+        if (base / "pyproject.toml").is_file():
+            return base
+    return None
+
+
+def _resolve_docker_path_to_local(path_value: str, *, local_relative: str) -> str:
+    """Mapea rutas Docker ``/app/...`` a rutas locales cuando no hay contenedor."""
+    raw = (path_value or "").strip()
+    path = Path(raw)
+    if not raw.startswith(_DOCKER_PATH_PREFIX):
+        return raw
+
+    root = _find_project_root()
+    if root is None:
+        return raw
+
+    local = (root / local_relative).resolve()
+    if path.exists():
+        try:
+            probe = path / ".mk_paper_write_probe"
+            probe.touch()
+            probe.unlink()
+            return raw
+        except OSError:
+            return str(local)
+
+    local.mkdir(parents=True, exist_ok=True)
+    return str(local)
 
 
 class Settings(BaseSettings):
@@ -83,6 +133,19 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
 
 
+def _resolve_runtime_paths(settings: Settings) -> Settings:
+    """En WSL/local, reemplaza ``/app/*`` por rutas del repo si no hay Docker."""
+    updates: dict[str, str] = {}
+    for field, rel in _LOCAL_PATH_MAP.items():
+        current = str(getattr(settings, field))
+        resolved = _resolve_docker_path_to_local(current, local_relative=rel)
+        if resolved != current:
+            updates[field] = resolved
+    if updates:
+        return settings.model_copy(update=updates)
+    return settings
+
+
 def get_settings() -> Settings:
-    """Retorna una instancia de configuración."""
-    return Settings()
+    """Retorna una instancia de configuración con rutas resueltas al entorno."""
+    return _resolve_runtime_paths(Settings())

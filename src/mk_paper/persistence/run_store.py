@@ -23,7 +23,6 @@ class PipelineRunContext:
     run_id: str
     run_dir: Path
     literature_dir: Path
-    analysis_dir: Path
     paper_dir: Path
     audit_dir: Path
     briefs_dir: Path
@@ -80,7 +79,6 @@ def create_pipeline_run(
     run_dir.mkdir(parents=True, exist_ok=True)
 
     literature_dir = run_dir / "literature"
-    analysis_dir = run_dir / "analysis"
     paper_dir = run_dir / "paper"
     audit_dir = run_dir / "audit"
     briefs_dir = run_dir / "briefs"
@@ -88,7 +86,6 @@ def create_pipeline_run(
     logs_dir = run_dir / "logs"
     for d in (
         literature_dir,
-        analysis_dir,
         paper_dir,
         audit_dir,
         briefs_dir,
@@ -101,7 +98,6 @@ def create_pipeline_run(
         run_id=run_id,
         run_dir=run_dir,
         literature_dir=literature_dir,
-        analysis_dir=analysis_dir,
         paper_dir=paper_dir,
         audit_dir=audit_dir,
         briefs_dir=briefs_dir,
